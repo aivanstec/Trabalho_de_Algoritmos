@@ -7,7 +7,7 @@ class Cidade:
     def __str__(self):
         return f"Código: {self.codCidade}, Descrição: {self.descricao}, Estado: {self.estado}"
 
-#------- Classe Aluno -------
+#------- Classe Aluno -------#
 class Aluno:
     def __init__(self, codigo, nome, dataNascimento, peso, altura, cidade):
         self.codAluno = codigo
