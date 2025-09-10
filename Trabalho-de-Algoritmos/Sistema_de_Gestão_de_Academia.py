@@ -15,13 +15,13 @@ class Aluno:
         self.data = dataNascimento
         self.peso = peso
         self.altura = altura
-        self.cod_cidade = cidade
+        self.cidade = cidade
 
     def __str__(self):
         return (f"Código do Aluno: {self.codAluno}"
                 f"\nNome: {self.nome}, Data de Nascimento: {self.data} "
                 f"\nPeso: {self.peso} kg, Altura: {self.altura} "
-                f"\nCidade: {self.cod_cidade.descricao} {self.cod_cidade.estado}")
+                f"\nCidade: {self.cidade.descricao} {self.cidade.estado}")
 
     def calcular_imc(self):
         if self.altura > 0:
@@ -48,12 +48,12 @@ class Professor:
         self.nome = nome
         self.endereco = endereco
         self.telefone = telefone
-        self.cod_cidade = cidade
+        self.cidade = cidade
 
     def __str__(self):
         return (f"Código do Professor: {self.codProfessor}, "
                 f"\nNome: {self.nome},  Telefone: {self.telefone}"
-                f"\nEndereço: {self.endereco} Cidade: {self.cod_cidade.descricao} {self.cod_cidade.estado}")
+                f"\nEndereço: {self.endereco} Cidade: {self.cidade.descricao} {self.cidade.estado}")
 
 #------- Classe Modalidade -------
 class Modalidade:
