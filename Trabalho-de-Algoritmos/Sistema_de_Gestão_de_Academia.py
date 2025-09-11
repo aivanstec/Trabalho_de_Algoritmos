@@ -133,7 +133,6 @@ class ArvoreBinaria:
     def salvar_arquivo(self, indece_atual, arquivo, formatador_arquivo):
         if indece_atual is None:
             self.salvar_arquivo(indece_atual.esquerda, arquivo, formatador_arquivo)
-            
             objeto = indece_atual.dado
             linha = formatador_arquivo(objeto)
             arquivo.write(linha)
@@ -329,3 +328,4 @@ if __name__ == "__main__":
         else:
 
             print("Opção inválida.")
+
