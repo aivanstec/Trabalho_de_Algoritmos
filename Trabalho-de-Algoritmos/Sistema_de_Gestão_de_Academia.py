@@ -122,7 +122,7 @@ class ArvoreBinaria:
         else:
             return self.buscar_indece(indece_atual.direita, codigo)
 
-    def salvar(self, arquivo, lista_dados, formatador_arquivo):
+    def salvar(self, arquivo, formatador_arquivo):
         try:
             with open(arquivo, "w", encoding= 'utf-8') as arq:
                 self.salvar_arquivo(self.raiz, arq, formatador_arquivo)
@@ -136,6 +136,8 @@ class ArvoreBinaria:
             objeto = indece_atual.dado
             linha = formatador_arquivo(objeto)
             arquivo.write(linha)
+
+            self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
 def incluir_cidade(arvore_cidade, lista_cidade):
     try:
