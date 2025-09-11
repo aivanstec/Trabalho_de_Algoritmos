@@ -125,14 +125,17 @@ class ArvoreBinaria:
     def salvar(self, arquivo, lista_dados, formatador_arquivo):
         try:
             with open(arquivo, "w", encoding= 'utf-8') as arq:
-                self.salvar_arquivo(self.raiz, arq, lista_dados, formatador_arquivo)
+                self.salvar_arquivo(self.raiz, arq, formatador_arquivo)
             print(f"\nArquivo '{arquivo}' salvo com sucesso!")
         except Exception as e:
             print(f"\nErro falha ao salvar o arquivo '{e}'")
 
-    def salvar_arquivo(self, indece_atual, arquivo, lista_dados, formatador_arquivo):
+    def salvar_arquivo(self, indece_atual, arquivo, formatador_arquivo):
         if indece_atual is None:
-            self.salvar_arquivo(indece_atual.esquerda, arquivo, lista_dados, formatador_arquivo)
+            self.salvar_arquivo(indece_atual.esquerda, arquivo, formatador_arquivo)
+            objeto = indece_atual.dado
+            linha = formatador_arquivo(objeto)
+            arquivo.write(linha)
 
 def incluir_cidade(arvore_cidade, lista_cidade):
     try:
