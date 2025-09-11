@@ -184,6 +184,34 @@ def incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade):
 
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
+        
+def consultar_aluno(arvore_alunos, lista_alunos):
+    if not lista_alunos:
+        print("\nNenhum aluno cadastrado.")
+        return
+
+    try:
+        codigo = int(input("Digite o código do aluno que deseja consultar: "))
+
+        endereco_aluno = arvore_alunos.buscar(codigo)
+
+        if endereco_aluno is None:
+            print("\nAluno não encontrado com este código.")
+            return
+
+        aluno_encontrado = lista_alunos[endereco_aluno]
+
+        print("\n--- Ficha do Aluno ---")
+        print(aluno_encontrado)
+
+        imc = aluno_encontrado.calcular_imc()
+        diagnostico = aluno_encontrado.diagnostico_imc()
+
+        print(f"IMC: {imc:.2f} - Diagnóstico: {diagnostico}")
+        print("----------------------")
+
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
 
 def incluir_professor(arvore_professor, lista_professor, arvore_cidade, lista_cidade):
     try:
@@ -272,35 +300,6 @@ def incluir_matricula(arvore_matricula, lista_matricula, arvore_aluno, lista_alu
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
 
-def consultar_aluno(arvore_alunos, lista_alunos):
-    if not lista_alunos:
-        print("\nNenhum aluno cadastrado.")
-        return
-
-    try:
-        codigo = int(input("Digite o código do aluno que deseja consultar: "))
-
-        endereco_aluno = arvore_alunos.buscar(codigo)
-
-        if endereco_aluno is None:
-            print("\nAluno não encontrado com este código.")
-            return
-
-        aluno_encontrado = lista_alunos[endereco_aluno]
-
-        print("\n--- Ficha do Aluno ---")
-        print(aluno_encontrado)
-
-        imc = aluno_encontrado.calcular_imc()
-        diagnostico = aluno_encontrado.diagnostico_imc()
-
-        print(f"IMC: {imc:.2f} - Diagnóstico: {diagnostico}")
-        print("----------------------")
-
-    except ValueError:
-        print("\nEntrada inválida. O código deve ser um número.")
-
-
 if __name__ == "__main__":
     lista_cidade = []
     arvore_cidade = ArvoreBinaria()
@@ -328,4 +327,5 @@ if __name__ == "__main__":
         else:
 
             print("Opção inválida.")
+
 
