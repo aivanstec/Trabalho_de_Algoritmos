@@ -122,6 +122,19 @@ class ArvoreBinaria:
         else:
             return self.buscar_indece(indece_atual.direita, codigo)
 
+    def salvar(self, arquivo, lista_dados):
+        try:
+            with open(arquivo, "w", encoding= 'utf-8') as arq:
+                self.salvar_arquivo(self.raiz, arq, lista_dados)
+            print(f"\nArquivo '{arquivo}' salvo com sucesso!")
+        except Exception as e:
+            print(f"\nErro falha ao salvar o arquivo '{e}'")
+
+    def salvar_arquivo(self, indece_atual, arquivo, lista_dados):
+        if indece_atual is None:
+            self.salvar_arquivo(indece_atual.esquerda, arquivo, lista_dados)
+
+
 def incluir_cidade(arvore_cidade, lista_cidade):
     try:
         cod_cidade = int(input("Digite o codigo da cidade: "))
