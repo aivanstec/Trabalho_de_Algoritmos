@@ -139,6 +139,25 @@ class ArvoreBinaria:
 
             self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
+def carregar_dados(arquivo, arvore, carregar_arquivo, arq_carregado):
+    try:
+        with open(arquivo, "r", encoding = 'utf-8') as f:
+            for linha in f:
+                linha = linha.strip()
+                if linha:
+                    arg = carregar_arquivo(linha.strip(';'), arq_carregado)
+                    if arg:
+                        codigo_arq = getattr(arg, list(arg.__dict__.keys())[0])
+                        arvore.inserir(codigo_arq, arg)
+        print(f"Dados do '{arquivo}' carregados com sucesso!")
+    except FileNotFoundError:
+        print(f"Arquivo '{arquivo}' não encontrado!")
+    except Exception as e:
+        print(f"Erro ao carregar '{arquivo}': {e}")
+
+def carregar_cidade(dado_arq, arq_carregado):
+    return Cidade(dado_arq[0], dado_arq[1], dado_arq[2])
+
 def incluir_cidade(arvore_cidade, lista_cidade):
     try:
         cod_cidade = int(input("Digite o codigo da cidade: "))
