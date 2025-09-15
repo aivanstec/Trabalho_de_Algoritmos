@@ -323,9 +323,7 @@ def incluir_matricula(arvore_matricula, lista_matricula, arvore_aluno, lista_alu
         print("\nCódigo inválido. Digite um numero inteiro.")
 
 if __name__ == "__main__":
-    lista_cidade = []
     arvore_cidade = ArvoreBinaria()
-    lista_aluno = []
     arvore_aluno = ArvoreBinaria()
 
     while True:
@@ -338,11 +336,11 @@ if __name__ == "__main__":
         opcao = input("Digite sua opcao: ")
 
         if opcao == '1':
-            incluir_cidade(arvore_cidade, lista_cidade)
+            incluir_cidade(arvore_cidade)
         elif opcao == '2':
-            incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade)
+            incluir_aluno(arvore_aluno, arvore_cidade)
         elif opcao == '3':
-            consultar_aluno(arvore_aluno, lista_aluno)
+            consultar_aluno(arvore_aluno)
         elif opcao == '0':
             print("Encerrando o programa!")
             break
