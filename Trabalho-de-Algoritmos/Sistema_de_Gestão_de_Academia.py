@@ -170,7 +170,8 @@ def incluir_cidade(arvore_cidade):
         nova_cidade = Cidade(cod_cidade, descricao, estado)
         arvore_cidade.inserir(cod_cidade, nova_cidade)
 
-        formado = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}"
+        formato = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}"
+        arvore_cidade.salvar("Dados/Dados_Cidade.txt", formato)
 
         print("\nCidade incluída com sucesso!")
         print("-" * 30)
