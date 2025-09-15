@@ -1,3 +1,5 @@
+import os
+
 #------- Classe Cidade -------
 class Cidade:
     def __init__(self, codigo, descricao, estado):
@@ -171,7 +173,7 @@ def incluir_cidade(arvore_cidade):
         arvore_cidade.inserir(cod_cidade, nova_cidade)
 
         formato = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}"
-        arvore_cidade.salvar("Dados/Dados_Cidade.txt", formato)
+        arvore_cidade.salvar("Dados/Dados_Cidades", formato)
 
         print("\nCidade incluída com sucesso!")
         print("-" * 30)
@@ -323,8 +325,12 @@ def incluir_matricula(arvore_matricula, lista_matricula, arvore_aluno, lista_alu
         print("\nCódigo inválido. Digite um numero inteiro.")
 
 if __name__ == "__main__":
+    os.makedirs("Dados", exist_ok=True)
+
     arvore_cidade = ArvoreBinaria()
     arvore_aluno = ArvoreBinaria()
+
+    carregar_dados("Dados/Dados_Cidade", arvore_cidade, carregar_cidade)
 
     while True:
         print("\n------ MENU PRINCIPAL ------")
