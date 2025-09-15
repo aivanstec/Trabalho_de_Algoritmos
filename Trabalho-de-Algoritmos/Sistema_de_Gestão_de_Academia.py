@@ -158,17 +158,19 @@ def carregar_dados(arquivo, arvore, carregar_arquivo, arq_carregado):
 def carregar_cidade(dado_arq, arq_carregado):
     return Cidade(dado_arq[0], dado_arq[1], dado_arq[2])
 
-def incluir_cidade(arvore_cidade, lista_cidade):
+def incluir_cidade(arvore_cidade):
     try:
         cod_cidade = int(input("Digite o codigo da cidade: "))
+        if arvore_cidade.buscar(cod_cidade) is not None:
+            print("\nErro: Já existe cidade com esse código.")
+            return
         descricao = input("Digite o Nome: ")
-        estado = input("Digite o Estado: ")
+        estado = input("Digite o Estado (UF): ")
 
         nova_cidade = Cidade(cod_cidade, descricao, estado)
-        lista_cidade.append(nova_cidade)
+        arvore_cidade.inserir(cod_cidade, nova_cidade)
 
-        novo_endereco = len(lista_cidade) - 1
-        arvore_cidade.inserir(cod_cidade, novo_endereco)
+        formado = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}"
 
         print("\nCidade incluída com sucesso!")
         print("-" * 30)
