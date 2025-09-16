@@ -133,7 +133,7 @@ class ArvoreBinaria:
             print(f"\nErro falha ao salvar o arquivo '{e}'")
 
     def salvar_arquivo(self, indece_atual, arquivo, formatador_arquivo):
-        if indece_atual is None:
+        if indece_atual is not None:
             self.salvar_arquivo(indece_atual.esquerda, arquivo, formatador_arquivo)
             objeto = indece_atual.dado
             linha = formatador_arquivo(objeto)
@@ -141,13 +141,14 @@ class ArvoreBinaria:
 
             self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
-def carregar_dados(arquivo, arvore, construtor_func, arq_carregar):
+def carregar_dados(arquivo, arvore, construtor_arq, arq_carregar):
     try:
         with open(arquivo, "r", encoding = 'utf-8') as f:
             for linha in f:
                 linha = linha.strip()
                 if linha:
-                    arg = construtor_func(linha.strip(';'), arq_carregar)
+                    dados = [d.strip() for d in linha.split(";")]
+                    arg = construtor_arq(dados, arq_carregar)
                     if arg:
                         codigo_arq = getattr(arg, list(arg.__dict__.keys())[0])
                         arvore.inserir(codigo_arq, arg)
@@ -331,25 +332,32 @@ if __name__ == "__main__":
 
     carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
 
-    while True:
-        print("\n------ MENU PRINCIPAL ------")
-        print("1. Incluir Cidade")
-        print("2. Incluir Aluno")
-        print("3. Consultar Aluno")
-        print("0. Sair")
+    if __name__ == "__main__":
+        os.makedirs("Dados", exist_ok=True)
 
-        opcao = input("Digite sua opcao: ")
+        arvore_cidade = ArvoreBinaria()
+        arvore_aluno = ArvoreBinaria()
 
-        if opcao == '1':
-            incluir_cidade(arvore_cidade)
-        elif opcao == '2':
-            incluir_aluno(arvore_aluno, arvore_cidade)
-        elif opcao == '3':
-            consultar_aluno(arvore_aluno)
-        elif opcao == '0':
-            print("Encerrando o programa!")
-            break
-        else:
+        carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
 
-            print("Opção inválida.")
+        while True:
+            print("\n------ MENU PRINCIPAL ------")
+            print("1. Incluir Cidade")
+            print("2. Incluir Aluno")
+            print("3. Consultar Aluno")
+            print("0. Sair")
+
+            opcao = input("Digite sua opcao: ")
+
+            if opcao == '1':
+                incluir_cidade(arvore_cidade)
+            elif opcao == '2':
+                incluir_aluno(arvore_aluno, arvore_cidade)
+            elif opcao == '3':
+                consultar_aluno(arvore_aluno)
+            elif opcao == '0':
+                print("Encerrando o programa!")
+                break
+            else:
+                print("Opção inválida.")
 
