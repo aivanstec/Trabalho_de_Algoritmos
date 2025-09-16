@@ -1,3 +1,5 @@
+import os
+
 #------- Classe Cidade -------
 class Cidade:
     def __init__(self, codigo, descricao, estado):
@@ -15,13 +17,13 @@ class Aluno:
         self.data = dataNascimento
         self.peso = peso
         self.altura = altura
-        self.cod_cidade = cidade
+        self.cidade = cidade
 
     def __str__(self):
         return (f"Código do Aluno: {self.codAluno}"
                 f"\nNome: {self.nome}, Data de Nascimento: {self.data} "
                 f"\nPeso: {self.peso} kg, Altura: {self.altura} "
-                f"\nCidade: {self.cod_cidade.descricao} {self.cod_cidade.estado}")
+                f"\nCidade: {self.cidade.descricao} {self.cidade.estado}")
 
     def calcular_imc(self):
         if self.altura > 0:
@@ -48,12 +50,12 @@ class Professor:
         self.nome = nome
         self.endereco = endereco
         self.telefone = telefone
-        self.cod_cidade = cidade
+        self.cidade = cidade
 
     def __str__(self):
         return (f"Código do Professor: {self.codProfessor}, "
                 f"\nNome: {self.nome},  Telefone: {self.telefone}"
-                f"\nEndereço: {self.endereco} Cidade: {self.cod_cidade.descricao} {self.cod_cidade.estado}")
+                f"\nEndereço: {self.endereco} Cidade: {self.cidade.descricao} {self.cidade.estado}")
 
 #------- Classe Modalidade -------
 class Modalidade:
@@ -122,17 +124,56 @@ class ArvoreBinaria:
         else:
             return self.buscar_indece(indece_atual.direita, codigo)
 
-def incluir_cidade(arvore_cidade, lista_cidade):
+    def salvar(self, arquivo, formatador_arquivo):
+        try:
+            with open(arquivo, "w", encoding= 'utf-8') as arq:
+                self.salvar_arquivo(self.raiz, arq, formatador_arquivo)
+            print(f"\nArquivo '{arquivo}' salvo com sucesso!")
+        except Exception as e:
+            print(f"\nErro falha ao salvar o arquivo '{e}'")
+
+    def salvar_arquivo(self, indece_atual, arquivo, formatador_arquivo):
+        if indece_atual is None:
+            self.salvar_arquivo(indece_atual.esquerda, arquivo, formatador_arquivo)
+            objeto = indece_atual.dado
+            linha = formatador_arquivo(objeto)
+            arquivo.write(linha)
+
+            self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
+
+def carregar_dados(arquivo, arvore, carregar_arquivo, arq_carregado):
+    try:
+        with open(arquivo, "r", encoding = 'utf-8') as f:
+            for linha in f:
+                linha = linha.strip()
+                if linha:
+                    arg = carregar_arquivo(linha.strip(';'), arq_carregado)
+                    if arg:
+                        codigo_arq = getattr(arg, list(arg.__dict__.keys())[0])
+                        arvore.inserir(codigo_arq, arg)
+        print(f"Dados do '{arquivo}' carregados com sucesso!")
+    except FileNotFoundError:
+        print(f"Arquivo '{arquivo}' não encontrado!")
+    except Exception as e:
+        print(f"Erro ao carregar '{arquivo}': {e}")
+
+def carregar_cidade(dado_arq, arq_carregado):
+    return Cidade(dado_arq[0], dado_arq[1], dado_arq[2])
+
+def incluir_cidade(arvore_cidade):
     try:
         cod_cidade = int(input("Digite o codigo da cidade: "))
+        if arvore_cidade.buscar(cod_cidade) is not None:
+            print("\nErro: Já existe cidade com esse código.")
+            return
         descricao = input("Digite o Nome: ")
-        estado = input("Digite o Estado: ")
+        estado = input("Digite o Estado (UF): ")
 
         nova_cidade = Cidade(cod_cidade, descricao, estado)
-        lista_cidade.append(nova_cidade)
+        arvore_cidade.inserir(cod_cidade, nova_cidade)
 
-        novo_endereco = len(lista_cidade) - 1
-        arvore_cidade.inserir(cod_cidade, novo_endereco)
+        formato = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}"
+        arvore_cidade.salvar("Dados/Dados_Cidades", formato)
 
         print("\nCidade incluída com sucesso!")
         print("-" * 30)
@@ -167,6 +208,34 @@ def incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade):
 
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
+        
+def consultar_aluno(arvore_alunos, lista_alunos):
+    if not lista_alunos:
+        print("\nNenhum aluno cadastrado.")
+        return
+
+    try:
+        codigo = int(input("Digite o código do aluno que deseja consultar: "))
+
+        endereco_aluno = arvore_alunos.buscar(codigo)
+
+        if endereco_aluno is None:
+            print("\nAluno não encontrado com este código.")
+            return
+
+        aluno_encontrado = lista_alunos[endereco_aluno]
+
+        print("\n--- Ficha do Aluno ---")
+        print(aluno_encontrado)
+
+        imc = aluno_encontrado.calcular_imc()
+        diagnostico = aluno_encontrado.diagnostico_imc()
+
+        print(f"IMC: {imc:.2f} - Diagnóstico: {diagnostico}")
+        print("----------------------")
+
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
 
 def incluir_professor(arvore_professor, lista_professor, arvore_cidade, lista_cidade):
     try:
@@ -255,40 +324,13 @@ def incluir_matricula(arvore_matricula, lista_matricula, arvore_aluno, lista_alu
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
 
-def consultar_aluno(arvore_alunos, lista_alunos):
-    if not lista_alunos:
-        print("\nNenhum aluno cadastrado.")
-        return
-
-    try:
-        codigo = int(input("Digite o código do aluno que deseja consultar: "))
-
-        endereco_aluno = arvore_alunos.buscar(codigo)
-
-        if endereco_aluno is None:
-            print("\nAluno não encontrado com este código.")
-            return
-
-        aluno_encontrado = lista_alunos[endereco_aluno]
-
-        print("\n--- Ficha do Aluno ---")
-        print(aluno_encontrado)
-
-        imc = aluno_encontrado.calcular_imc()
-        diagnostico = aluno_encontrado.diagnostico_imc()
-
-        print(f"IMC: {imc:.2f} - Diagnóstico: {diagnostico}")
-        print("----------------------")
-
-    except ValueError:
-        print("\nEntrada inválida. O código deve ser um número.")
-
-
 if __name__ == "__main__":
-    lista_cidade = []
+    os.makedirs("Dados", exist_ok=True)
+
     arvore_cidade = ArvoreBinaria()
-    lista_aluno = []
     arvore_aluno = ArvoreBinaria()
+
+    carregar_dados("Dados/Dados_Cidade", arvore_cidade, carregar_cidade)
 
     while True:
         print("\n------ MENU PRINCIPAL ------")
@@ -300,13 +342,15 @@ if __name__ == "__main__":
         opcao = input("Digite sua opcao: ")
 
         if opcao == '1':
-            incluir_cidade(arvore_cidade, lista_cidade)
+            incluir_cidade(arvore_cidade)
         elif opcao == '2':
-            incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade)
+            incluir_aluno(arvore_aluno, arvore_cidade)
         elif opcao == '3':
-            consultar_aluno(arvore_aluno, lista_aluno)
+            consultar_aluno(arvore_aluno)
         elif opcao == '0':
             print("Encerrando o programa!")
             break
         else:
+
             print("Opção inválida.")
+
