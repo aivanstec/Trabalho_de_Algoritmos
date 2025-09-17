@@ -147,7 +147,7 @@ def carregar_dados(arquivo, arvore, construtor_arq, arq_carregar):
             for linha in f:
                 linha = linha.strip()
                 if linha:
-                    dados = [d.strip() for d in linha.split(";")]
+                    dados = [d.strip() for d in linha.split(',')]
                     arg = construtor_arq(dados, arq_carregar)
                     if arg:
                         codigo_arq = getattr(arg, list(arg.__dict__.keys())[0])
@@ -174,7 +174,7 @@ def incluir_cidade(arvore_cidade):
         arvore_cidade.inserir(cod_cidade, nova_cidade)
 
         formato = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}"
-        arvore_cidade.salvar("Dados/Cidades.txt", formato)
+        arvore_cidade.salvar("Dados/cidades.txt", formato)
 
         print("\nCidade incluída com sucesso!")
 
@@ -196,16 +196,13 @@ def incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade):
             return
 
         cidade = lista_cidade[endereco_cidade]
-
         novo_aluno = Aluno(cod_aluno, nome, data, peso, altura, cidade)
 
         lista_aluno.append(novo_aluno)
         novo_endereco = len(lista_aluno) - 1
         arvore_aluno.inserir(cod_aluno, novo_endereco)
-
         print("\nAluno incluído com sucesso!")
         print("-" * 30)
-
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
         
@@ -216,7 +213,6 @@ def consultar_aluno(arvore_alunos, lista_alunos):
 
     try:
         codigo = int(input("Digite o código do aluno que deseja consultar: "))
-
         endereco_aluno = arvore_alunos.buscar(codigo)
 
         if endereco_aluno is None:
@@ -224,10 +220,8 @@ def consultar_aluno(arvore_alunos, lista_alunos):
             return
 
         aluno_encontrado = lista_alunos[endereco_aluno]
-
         print("\n--- Ficha do Aluno ---")
         print(aluno_encontrado)
-
         imc = aluno_encontrado.calcular_imc()
         diagnostico = aluno_encontrado.diagnostico_imc()
 
@@ -279,7 +273,6 @@ def incluir_modalidade(arvore_modalidade, lista_modalidade, arvore_professor, li
             return
 
         professor = lista_professor[endereco_professor]
-
         nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, valor, limite, total, professor)
         lista_modalidade.append(nova_modalidade)
 
@@ -332,32 +325,24 @@ if __name__ == "__main__":
 
     carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
 
-    if __name__ == "__main__":
-        os.makedirs("Dados", exist_ok=True)
+    while True:
+        print("\n------ MENU PRINCIPAL ------")
+        print("1. Incluir Cidade")
+        print("2. Incluir Aluno")
+        print("3. Consultar Aluno")
+        print("0. Sair")
 
-        arvore_cidade = ArvoreBinaria()
-        arvore_aluno = ArvoreBinaria()
+        opcao = input("Digite sua opcao: ")
 
-        carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
-
-        while True:
-            print("\n------ MENU PRINCIPAL ------")
-            print("1. Incluir Cidade")
-            print("2. Incluir Aluno")
-            print("3. Consultar Aluno")
-            print("0. Sair")
-
-            opcao = input("Digite sua opcao: ")
-
-            if opcao == '1':
-                incluir_cidade(arvore_cidade)
-            elif opcao == '2':
-                incluir_aluno(arvore_aluno, arvore_cidade)
-            elif opcao == '3':
-                consultar_aluno(arvore_aluno)
-            elif opcao == '0':
-                print("Encerrando o programa!")
-                break
-            else:
-                print("Opção inválida.")
+        if opcao == '1':
+            incluir_cidade(arvore_cidade)
+        elif opcao == '2':
+            incluir_aluno(arvore_aluno, arvore_cidade)
+        elif opcao == '3':
+            consultar_aluno(arvore_aluno)
+        elif opcao == '0':
+            print("Encerrando o programa!")
+            break
+        else:
+            print("Opção inválida.")
 
