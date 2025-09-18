@@ -84,9 +84,9 @@ class Matricula:
 
 #------- Classe Indece -------
 class Indece:
-    def __init__(self, codigo, end):
+    def __init__(self, codigo, end_obj):
         self.codigo = codigo
-        self.end = end
+        self.end = end_obj
         self.esquerda = None
         self.direita = None
 
@@ -95,11 +95,11 @@ class ArvoreBinaria:
     def __init__(self):
         self.raiz = None
 
-    def inserir(self, codigo, end):
+    def inserir(self, codigo, end_obj):
         if self.raiz is None:
-            self.raiz = Indece(codigo, end)
+            self.raiz = Indece(codigo, end_obj)
         else:
-            self.inserir_indece(self.raiz, codigo, end)
+            self.inserir_indece(self.raiz, codigo, end_obj)
 
     def inserir_indece(self, indece_atual, codigo, endereco):
         if codigo < indece_atual.codigo:
@@ -141,24 +141,24 @@ class ArvoreBinaria:
 
             self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
-def carregar_dados(arquivo, arvore, construtor_arq, arq_carregar):
+def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
     try:
         with open(arquivo, "r", encoding = 'utf-8') as f:
             for linha in f:
                 linha = linha.strip()
                 if linha:
                     dados = [d.strip() for d in linha.split(',')]
-                    arg = construtor_arq(dados, arq_carregar)
-                    if arg:
-                        codigo_arq = getattr(arg, list(arg.__dict__.keys())[0])
-                        arvore.inserir(codigo_arq, arg)
+                    arq = construtor_arq(dados, **carregar)
+                    if arq:
+                        codigo_arq = getattr(arq, list(arq.__dict__.keys())[0])
+                        arvore.inserir(codigo_arq, arq)
         print(f"Dados do '{arquivo}' carregados com sucesso!")
     except FileNotFoundError:
         print(f"Arquivo '{arquivo}' não encontrado!")
     except Exception as e:
         print(f"Erro ao carregar '{arquivo}': {e}")
 
-def construtor_cidade(data, arq_carregar):
+def construtor_cidade(data, **carregar):
     return Cidade(int(data[0]), data[1], data[2])
 
 def incluir_cidade(arvore_cidade):
@@ -205,7 +205,7 @@ def incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade):
         print("-" * 30)
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
-        
+
 def consultar_aluno(arvore_alunos, lista_alunos):
     if not lista_alunos:
         print("\nNenhum aluno cadastrado.")
@@ -345,4 +345,3 @@ if __name__ == "__main__":
             break
         else:
             print("Opção inválida.")
-
