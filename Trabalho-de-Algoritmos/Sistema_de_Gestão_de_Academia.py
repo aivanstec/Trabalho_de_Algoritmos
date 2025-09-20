@@ -86,7 +86,7 @@ class Matricula:
 class Indece:
     def __init__(self, codigo, dado_obj):
         self.codigo = codigo
-        self.end = dado_obj
+        self.dado = dado_obj
         self.esquerda = None
         self.direita = None
 
