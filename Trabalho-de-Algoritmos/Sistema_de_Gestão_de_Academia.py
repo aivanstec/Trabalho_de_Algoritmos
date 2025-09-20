@@ -84,9 +84,9 @@ class Matricula:
 
 #------- Classe Indece -------
 class Indece:
-    def __init__(self, codigo, end_obj):
+    def __init__(self, codigo, dado_obj):
         self.codigo = codigo
-        self.end = end_obj
+        self.end = dado_obj
         self.esquerda = None
         self.direita = None
 
@@ -95,23 +95,23 @@ class ArvoreBinaria:
     def __init__(self):
         self.raiz = None
 
-    def inserir(self, codigo, end_obj):
+    def inserir(self, codigo, dado_obj):
         if self.raiz is None:
-            self.raiz = Indece(codigo, end_obj)
+            self.raiz = Indece(codigo, dado_obj)
         else:
-            self.inserir_indece(self.raiz, codigo, end_obj)
+            self.inserir_indece(self.raiz, codigo, dado_obj)
 
-    def inserir_indece(self, indece_atual, codigo, endereco):
+    def inserir_indece(self, indece_atual, codigo, dado_obj):
         if codigo < indece_atual.codigo:
             if indece_atual.esquerda is None:
-                indece_atual.esquerda = Indece(codigo, endereco)
+                indece_atual.esquerda = Indece(codigo, dado_obj)
             else:
-                self.inserir_indece(indece_atual.esquerda, codigo, endereco)
+                self.inserir_indece(indece_atual.esquerda, codigo, dado_obj)
         else:
             if indece_atual.direita is None:
-                indece_atual.direita = Indece(codigo, endereco)
+                indece_atual.direita = Indece(codigo, dado_obj)
             else:
-                self.inserir_indece(indece_atual.direita, codigo, endereco)
+                self.inserir_indece(indece_atual.direita, codigo, dado_obj)
 
     def buscar(self, codigo):
         return self.buscar_indece(self.raiz, codigo)
