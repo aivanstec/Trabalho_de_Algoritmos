@@ -364,7 +364,10 @@ if __name__ == "__main__":
         print("\n------ MENU PRINCIPAL ------")
         print("1. Incluir Cidade")
         print("2. Incluir Aluno")
-        print("3. Consultar Aluno")
+        print("3. Incluir Professor")
+        print("4. Incluir Modalidade")
+        print("5. Fazer Matrícula")
+        print("6. Consultar Aluno")
         print("0. Sair")
 
         opcao = input("Digite sua opcao: ")
@@ -374,6 +377,12 @@ if __name__ == "__main__":
         elif opcao == '2':
             incluir_aluno(arvore_aluno, arvore_cidade)
         elif opcao == '3':
+            incluir_professor(arvore_professor, arvore_cidade)
+        elif opcao == '4':
+            incluir_modalidade(arvore_modalidade, arvore_professor)
+        elif opcao == '5':
+            incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade)
+        elif opcao == '6':
             consultar_aluno(arvore_aluno)
         elif opcao == '0':
             print("Encerrando o programa!")
