@@ -356,6 +356,10 @@ if __name__ == "__main__":
 
     carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
     carregar_dados("Dados/alunos.txt", arvore_aluno, construtor_aluno, arvore_cidade = arvore_cidade)
+    carregar_dados("Dados/professores.txt", arvore_professor, consultar_professor, arvore_cidade = arvore_cidade)
+    carregar_dados("Dados/modalidade.txt", arvore_modalidade, construtor_modalidade, arvore_professor = arvore_professor)
+    carregar_dados("Dados/matriculas.txt", arvore_matricula, construtor_matricula, arvore_aluno = arvore_aluno, arvore_modalidade = arvore_modalidade)
+
     while True:
         print("\n------ MENU PRINCIPAL ------")
         print("1. Incluir Cidade")
