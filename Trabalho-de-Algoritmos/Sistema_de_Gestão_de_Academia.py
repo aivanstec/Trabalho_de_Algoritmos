@@ -158,6 +158,7 @@ def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
     except Exception as e:
         print(f"Erro ao carregar '{arquivo}': {e}")
 
+#------- Área da Cidade -------
 def construtor_cidade(data, **carregar):
     return Cidade(int(data[0]), data[1], data[2])
 
@@ -177,9 +178,16 @@ def incluir_cidade(arvore_cidade):
         arvore_cidade.salvar("Dados/cidades.txt", formato)
 
         print("\nCidade incluída com sucesso!")
-
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
+
+#------- Área da Aluno -------
+def construtor_aluno(data, **carregar):
+    arvore_cidade = carregar['arvore_cidade']
+    cidade = arvore_cidade.buscar(int(data[5]))
+    if cidade:
+        return Aluno(int(data[0]), data[1], data[2], float(data[3]), float(data[4]), cidade)
+    return None
 
 def incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade):
     try:
@@ -210,7 +218,6 @@ def consultar_aluno(arvore_alunos, lista_alunos):
     if not lista_alunos:
         print("\nNenhum aluno cadastrado.")
         return
-
     try:
         codigo = int(input("Digite o código do aluno que deseja consultar: "))
         endereco_aluno = arvore_alunos.buscar(codigo)
@@ -227,9 +234,16 @@ def consultar_aluno(arvore_alunos, lista_alunos):
 
         print(f"IMC: {imc:.2f} - Diagnóstico: {diagnostico}")
         print("----------------------")
-
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
+
+#------- Área da Professor -------
+def consultar_professor(data, **carrega):
+    arvore_cidade = carrega['arvore_cidade']
+    cidade = arvore_cidade.buscar(int(data[4]))
+    if carrega:
+        return Professor(int(data[0]), data[1], data[2], data[3], cidade)
+    return None
 
 def incluir_professor(arvore_professor, lista_professor, arvore_cidade, lista_cidade):
     try:
@@ -254,9 +268,16 @@ def incluir_professor(arvore_professor, lista_professor, arvore_cidade, lista_ci
 
         print("\nProfessor incluído com sucesso!")
         print("-" * 30)
-
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
+
+#------- Área da Modalidade -------
+def construtor_modalidade(data, **carrega):
+    arvore_professor = carrega['arvore_professor']
+    professor = arvore_professor.buscar(int(data[5]))
+    if professor:
+        return Modalidade(int(data[0]), data[1], professor,float(data[2]), int(data[3]), int(data[4]))
+    return None
 
 def incluir_modalidade(arvore_modalidade, lista_modalidade, arvore_professor, lista_professor):
     try:
@@ -281,10 +302,18 @@ def incluir_modalidade(arvore_modalidade, lista_modalidade, arvore_professor, li
 
         print("\nModalidade incluída com sucesso!")
         print("-" * 30)
-
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
 
+#------- Área da Matricila -------
+def construtor_matricula(data, **carrega):
+    arvore_aluno = carrega['arvore_aluno']
+    arvore_modalidade = carrega['arvore_modalidade']
+    aluno = arvore_aluno.buscar(int(data[2]))
+    modalidade = arvore_modalidade.buscar(int(data[3]))
+    if modalidade and aluno:
+        return Matricula(int(data[0]), aluno, modalidade, int(data[1]))
+    return None
 def incluir_matricula(arvore_matricula, lista_matricula, arvore_aluno, lista_aluno, arvore_modalidade, lista_modalidade):
     try:
         cod_matricula = int(input("Digite o codigo do Matricula: "))
@@ -313,7 +342,6 @@ def incluir_matricula(arvore_matricula, lista_matricula, arvore_aluno, lista_alu
 
         print("\nMatrícula feita com sucesso!")
         print("-" * 30)
-
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
 
@@ -324,7 +352,7 @@ if __name__ == "__main__":
     arvore_aluno = ArvoreBinaria()
 
     carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
-
+    carregar_dados("Dados/alunos.txt", arvore_aluno, construtor_aluno, arvore_cidade = arvore_cidade)
     while True:
         print("\n------ MENU PRINCIPAL ------")
         print("1. Incluir Cidade")
