@@ -350,6 +350,9 @@ if __name__ == "__main__":
 
     arvore_cidade = ArvoreBinaria()
     arvore_aluno = ArvoreBinaria()
+    arvore_professor = ArvoreBinaria()
+    arvore_modalidade = ArvoreBinaria()
+    arvore_matricula = ArvoreBinaria()
 
     carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
     carregar_dados("Dados/alunos.txt", arvore_aluno, construtor_aluno, arvore_cidade = arvore_cidade)
