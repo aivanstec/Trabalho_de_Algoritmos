@@ -166,7 +166,7 @@ def incluir_cidade(arvore_cidade):
     try:
         cod_cidade = int(input("Digite o codigo da cidade: "))
         if arvore_cidade.buscar(cod_cidade) is not None:
-            print("\nErro: Já existe cidade com esse código.")
+            print("\nErro: Já existe cidade com esse CEP.")
             return
         descricao = input("Digite o Nome: ")
         estado = input("Digite o Estado (UF): ")
@@ -174,7 +174,7 @@ def incluir_cidade(arvore_cidade):
         nova_cidade = Cidade(cod_cidade, descricao, estado)
         arvore_cidade.inserir(cod_cidade, nova_cidade)
 
-        formato = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}"
+        formato = lambda cid: f"CEP:{cid.codCidade}, Nome:{cid.descricao}, Estado:{cid.estado}\n"
         arvore_cidade.salvar("Dados/cidades.txt", formato)
 
         print("\nCidade incluída com sucesso!")
@@ -189,29 +189,30 @@ def construtor_aluno(data, **carregar):
         return Aluno(int(data[0]), data[1], data[2], float(data[3]), float(data[4]), cidade)
     return None
 
-def incluir_aluno(arvore_aluno, lista_aluno, arvore_cidade, lista_cidade):
+def incluir_aluno(arvore_aluno, arvore_cidade):
     try:
         cod_aluno = int(input("Digite o codigo do Aluno: "))
+        if arvore_aluno.buscar(cod_aluno):
+            print("\nErro: Já existe aluno com esse ID.")
+            return
         nome = input("Digite o Nome: ")
         data = input("Digite a data de nascimento: ")
         peso = float(input("Digite o peso: "))
         altura = float (input("Digite a altura: "))
         cod_cidade = int(input("Digite o Código da Cidade: "))
 
-        endereco_cidade = arvore_cidade.buscar(cod_cidade)
-        if endereco_cidade is None:
+        cidade = arvore_cidade.buscar(cod_cidade)
+        if cidade is None:
             print("\nCidade não encontrada. Digite novamente.")
             return
 
-        cidade = lista_cidade[endereco_cidade]
         novo_aluno = Aluno(cod_aluno, nome, data, peso, altura, cidade)
-
-        lista_aluno.append(novo_aluno)
-        novo_endereco = len(lista_aluno) - 1
-        arvore_aluno.inserir(cod_aluno, novo_endereco)
+        arvore_aluno.inserir(cod_aluno, novo_aluno)
+        formato = lambda alu: f"Código:{alu.codAluno}, Nome:{alu.nome},Data de Nascimento: {alu.data}, Peso: {alu.peso}, Altura: {alu.altura}, Cidade:{alu.cidade.codCidade}\n"
+        arvore_aluno.salvar("Dados/alunos.txt", formato)
         print("\nAluno incluído com sucesso!")
         print("-" * 30)
-    except ValueError:
+    except (ValueError, IndexError):
         print("\nCódigo inválido. Digite um numero inteiro.")
 
 def consultar_aluno(arvore_alunos, lista_alunos):
@@ -238,34 +239,33 @@ def consultar_aluno(arvore_alunos, lista_alunos):
         print("\nEntrada inválida. O código deve ser um número.")
 
 #------- Área da Professor -------
-def consultar_professor(data, **carrega):
+def construtor_professor(data, **carrega):
     arvore_cidade = carrega['arvore_cidade']
     cidade = arvore_cidade.buscar(int(data[4]))
     if carrega:
         return Professor(int(data[0]), data[1], data[2], data[3], cidade)
     return None
 
-def incluir_professor(arvore_professor, lista_professor, arvore_cidade, lista_cidade):
+def incluir_professor(arvore_professor, arvore_cidade):
     try:
         cod_professor = int(input("Digite o codigo do Professor: "))
+        if arvore_professor.buscar(cod_professor):
+            print("\nErro: Já existe professor com esse ID.")
+            return
         nome = input("Digite o Nome do Professor: ")
         endereco = input("Digite o Endereco do Professor: ")
         telefone = input("Digite o Telefone do Professor: ")
         cod_cidade = int(input("Digite o Cidade do Professor: "))
 
-        endereco_cidade = arvore_cidade.buscar(cod_cidade)
-        if endereco_cidade is None:
-            print("\nCidade não encontrada. Digite novamente.")
+        cidade = arvore_cidade.buscar(cod_cidade)
+        if cidade is None:
+            print("\nCidade não encontrada. Cadastre a cidade primeiro.")
             return
 
-        cidade = lista_cidade[endereco_cidade]
-
         novo_professor = Professor(cod_professor, nome, endereco, telefone, cidade)
-        lista_professor.append(novo_professor)
-
-        novo_endereco = len(lista_professor) - 1
-        arvore_professor.inserir(cod_professor, novo_endereco)
-
+        arvore_professor.inserir(cod_professor, novo_professor)
+        formato = lambda prof: f"Código:{prof.codProfessor}, Nome:{prof.nome},Endereço:{prof.endereco}, Telefone:{prof.telefone}, Cidade:{prof.cidade.codCidade}\n"
+        arvore_professor.salvar("Dados/professor.txt", formato)
         print("\nProfessor incluído com sucesso!")
         print("-" * 30)
     except ValueError:
@@ -279,27 +279,29 @@ def construtor_modalidade(data, **carrega):
         return Modalidade(int(data[0]), data[1], professor,float(data[2]), int(data[3]), int(data[4]))
     return None
 
-def incluir_modalidade(arvore_modalidade, lista_modalidade, arvore_professor, lista_professor):
+def incluir_modalidade(arvore_modalidade, arvore_professor):
     try:
         cod_modalidade = int(input("Digite o codigo do Professor: "))
+        if arvore_modalidade.buscar(cod_modalidade):
+            print("\nErro: Já existe modalidade com esse ID.")
+            return
         desc_modalidade = input("Digite o descricao do modalidade: ")
         valor = input("Digite o valor da aula: ")
         limite = input("Digite o limite de alunos: ")
         total = input("Digite o total de alunos: ")
         cod_professor = int(input("Digite o Cidade do Professor: "))
 
-        endereco_professor = arvore_professor.buscar(cod_professor)
-        if endereco_professor is None:
+        end_professor = arvore_professor.buscar(cod_professor)
+        if end_professor is None:
             print("\nCidade não encontrada. Digite novamente.")
             return
 
-        professor = lista_professor[endereco_professor]
-        nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, valor, limite, total, professor)
-        lista_modalidade.append(nova_modalidade)
-
-        novo_endereco = len(lista_modalidade) - 1
-        arvore_modalidade.inserir(cod_modalidade, novo_endereco)
-
+        nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, valor, limite, total, end_professor)
+        arvore_modalidade.inserir(cod_modalidade, nova_modalidade)
+        formato = lambda mod: (f"Código:{mod.cod_modalidade}, Descrição:{mod.desc_modalidade}, Valor da aula:{mod.valorAula}, "
+                               f"Limite de aluno:{mod.limiteAlunos}, Total de alunos:{mod.totaAlunos}, "
+                               f"Professor:{mod.cod_professor.codProfessor}\n")
+        arvore_modalidade.salvar("Dados/modalidades.txt", formato)
         print("\nModalidade incluída com sucesso!")
         print("-" * 30)
     except ValueError:
@@ -356,7 +358,7 @@ if __name__ == "__main__":
 
     carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
     carregar_dados("Dados/alunos.txt", arvore_aluno, construtor_aluno, arvore_cidade = arvore_cidade)
-    carregar_dados("Dados/professores.txt", arvore_professor, consultar_professor, arvore_cidade = arvore_cidade)
+    carregar_dados("Dados/professores.txt", arvore_professor, construtor_professor, arvore_cidade = arvore_cidade)
     carregar_dados("Dados/modalidade.txt", arvore_modalidade, construtor_modalidade, arvore_professor = arvore_professor)
     carregar_dados("Dados/matriculas.txt", arvore_matricula, construtor_matricula, arvore_aluno = arvore_aluno, arvore_modalidade = arvore_modalidade)
 
