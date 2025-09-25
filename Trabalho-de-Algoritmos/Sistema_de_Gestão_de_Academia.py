@@ -60,7 +60,7 @@ class Professor:
 #------- Classe Modalidade -------
 class Modalidade:
     def __init__(self, codigo, descricao, professor, valorAula, limiteAlunos, totaAlunos):
-        self.cod_modalidade = codigo
+        self.codModalidade = codigo
         self.desc_Modalidade = descricao
         self.cod_professor = professor
         self.valorAula = valorAula
@@ -68,7 +68,7 @@ class Modalidade:
         self.totaAlunos = totaAlunos
 
     def __str__(self):
-        return (f"Código da Modalidade: {self.cod_modalidade}, Descrição da Modalidade: {self.desc_Modalidade}"
+        return (f"Código da Modalidade: {self.codModalidade}, Descrição da Modalidade: {self.desc_Modalidade}"
                 f"\nCódigo do Professor: {self.cod_professor.nome}, Valor da Aula: {self.valorAula}, Limite de Alunos: {self.limiteAlunos}, Total de Alunos: {self.totaAlunos} ")
 
 #------- Classe Matrícila -------
@@ -316,32 +316,26 @@ def construtor_matricula(data, **carrega):
     if modalidade and aluno:
         return Matricula(int(data[0]), aluno, modalidade, int(data[1]))
     return None
-def incluir_matricula(arvore_matricula, lista_matricula, arvore_aluno, lista_aluno, arvore_modalidade, lista_modalidade):
+def incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade):
     try:
         cod_matricula = int(input("Digite o codigo do Matricula: "))
         cod_aluno = int(input("Digite o codigo do Aluno: "))
         cod_modalidade = int(input("Digite o codigo do Modalidade: "))
         quantidade = input("Digite o quantidade de aulas: ")
 
-        endereco_aluno = arvore_aluno.buscar(cod_aluno)
-        if endereco_aluno is None:
+        aluno = arvore_aluno.buscar(cod_aluno)
+        if aluno is None:
             print("\nAluno não encontrado. Digite novamente.")
             return
 
-        endereco_modalidade = arvore_modalidade.buscar(cod_modalidade)
-        if endereco_modalidade is None:
+        modalidade = arvore_modalidade.buscar(cod_modalidade)
+        if modalidade is None:
             print("\nModalidade não encontrada. Digite novamente.")
             return
 
-        aluno = lista_aluno[endereco_aluno]
-        modalidade = lista_modalidade[endereco_modalidade]
-
         nova_matricula = Matricula(cod_matricula, aluno, modalidade, quantidade)
-        lista_matricula.append(nova_matricula)
-
-        novo_endereco = len(lista_matricula) - 1
-        arvore_matricula.inserir(cod_matricula, novo_endereco)
-
+        arvore_matricula.inserir(cod_matricula, nova_matricula)
+        formato = lambda matri: f"Código:{matri.cod_Matricula}, Quantidade de Aulas:{matri.qtdeAulas}, Aluno:{matri.cod_aluno.codAluno}, Modalidade:{matri.cod_modalidade.codModalidade}\n"
         print("\nMatrícula feita com sucesso!")
         print("-" * 30)
     except ValueError:
