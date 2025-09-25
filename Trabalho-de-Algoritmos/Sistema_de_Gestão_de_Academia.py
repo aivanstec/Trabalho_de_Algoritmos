@@ -107,7 +107,7 @@ class ArvoreBinaria:
                 indece_atual.esquerda = Indece(codigo, dado_obj)
             else:
                 self.inserir_indece(indece_atual.esquerda, codigo, dado_obj)
-        else:
+        elif codigo > indece_atual.codigo:
             if indece_atual.direita is None:
                 indece_atual.direita = Indece(codigo, dado_obj)
             else:
@@ -118,7 +118,7 @@ class ArvoreBinaria:
 
     def buscar_indece(self, indece_atual, codigo):
         if indece_atual is None or indece_atual.codigo == codigo:
-            return indece_atual.end if indece_atual else None
+            return indece_atual.dado if indece_atual else None
         if codigo < indece_atual.codigo:
             return self.buscar_indece(indece_atual.esquerda, codigo)
         else:
@@ -130,7 +130,7 @@ class ArvoreBinaria:
                 self.salvar_arquivo(self.raiz, arq, formatador_arquivo)
             print(f"\nArquivo '{arquivo}' salvo com sucesso!")
         except Exception as e:
-            print(f"\nErro falha ao salvar o arquivo '{e}'")
+            print(f"\nErro falha ao salvar o arquivo '{arquivo}'. Detalhes: {e}")
 
     def salvar_arquivo(self, indece_atual, arquivo, formatador_arquivo):
         if indece_atual is not None:
@@ -138,23 +138,22 @@ class ArvoreBinaria:
             objeto = indece_atual.dado
             linha = formatador_arquivo(objeto)
             arquivo.write(linha)
-
             self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
 def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
     try:
-        with open(arquivo, "r", encoding = 'utf-8') as f:
+        with open(arquivo, "r", encoding='utf-8') as f:
             for linha in f:
                 linha = linha.strip()
                 if linha:
                     dados = [d.strip() for d in linha.split(',')]
-                    arq = construtor_arq(dados, **carregar)
-                    if arq:
-                        codigo_arq = getattr(arq, list(arq.__dict__.keys())[0])
-                        arvore.inserir(codigo_arq, arq)
-        print(f"Dados do '{arquivo}' carregados com sucesso!")
+                    obj = construtor_arq(dados, **carregar)
+                    if obj:
+                        codigo_obj = getattr(obj, list(obj.__dict__.keys())[0])
+                        arvore.inserir(codigo_obj, obj)
+        print(f"Dados de '{arquivo}' carregados.")
     except FileNotFoundError:
-        print(f"Arquivo '{arquivo}' não encontrado!")
+        print(f"Arquivo '{arquivo}' não encontrado.")
     except Exception as e:
         print(f"Erro ao carregar '{arquivo}': {e}")
 
@@ -170,13 +169,10 @@ def incluir_cidade(arvore_cidade):
             return
         descricao = input("Digite o Nome: ")
         estado = input("Digite o Estado (UF): ")
-
         nova_cidade = Cidade(cod_cidade, descricao, estado)
         arvore_cidade.inserir(cod_cidade, nova_cidade)
-
-        formato = lambda cid: f"CEP:{cid.codCidade}, Nome:{cid.descricao}, Estado:{cid.estado}\n"
+        formato = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}\n"
         arvore_cidade.salvar("Dados/cidades.txt", formato)
-
         print("\nCidade incluída com sucesso!")
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
@@ -198,22 +194,22 @@ def incluir_aluno(arvore_aluno, arvore_cidade):
         nome = input("Digite o Nome: ")
         data = input("Digite a data de nascimento: ")
         peso = float(input("Digite o peso: "))
-        altura = float (input("Digite a altura: "))
+        altura = float(input("Digite a altura: "))
         cod_cidade = int(input("Digite o Código da Cidade: "))
 
         cidade = arvore_cidade.buscar(cod_cidade)
         if cidade is None:
-            print("\nCidade não encontrada. Digite novamente.")
+            print("\nCidade não encontrada. Cadastre a cidade primeiro.")
             return
 
         novo_aluno = Aluno(cod_aluno, nome, data, peso, altura, cidade)
         arvore_aluno.inserir(cod_aluno, novo_aluno)
-        formato = lambda alu: f"Código:{alu.codAluno}, Nome:{alu.nome},Data de Nascimento: {alu.data}, Peso: {alu.peso}, Altura: {alu.altura}, Cidade:{alu.cidade.codCidade}\n"
+        formato = lambda \
+            alu: f"{alu.codAluno}, {alu.nome}, {alu.data}, {alu.peso}, {alu.altura}, {alu.cidade.descricao}, {alu.cidade.estado}\n"
         arvore_aluno.salvar("Dados/alunos.txt", formato)
         print("\nAluno incluído com sucesso!")
-        print("-" * 30)
     except (ValueError, IndexError):
-        print("\nCódigo inválido. Digite um numero inteiro.")
+        print("\nDados inválidos. Por favor, tente novamente.")
 
 def consultar_aluno(arvore_alunos):
     try:
@@ -224,6 +220,7 @@ def consultar_aluno(arvore_alunos):
             print("\nAluno não encontrado com este código.")
             return
         print("\n--- Ficha do Aluno ---")
+        print(aluno_encontrado)
         print(f"IMC: {aluno_encontrado.calcular_imc():.2f} - Diagnóstico: {aluno_encontrado.diagnostico_imc()}")
         print("----------------------")
     except ValueError:
@@ -244,9 +241,9 @@ def incluir_professor(arvore_professor, arvore_cidade):
             print("\nErro: Já existe professor com esse ID.")
             return
         nome = input("Digite o Nome do Professor: ")
-        endereco = input("Digite o Endereco do Professor: ")
-        telefone = input("Digite o Telefone do Professor: ")
-        cod_cidade = int(input("Digite o Cidade do Professor: "))
+        endereco = input("Digite o Endereço: ")
+        telefone = input("Digite o Telefone: ")
+        cod_cidade = int(input("Digite o Código da Cidade: "))
 
         cidade = arvore_cidade.buscar(cod_cidade)
         if cidade is None:
@@ -255,48 +252,46 @@ def incluir_professor(arvore_professor, arvore_cidade):
 
         novo_professor = Professor(cod_professor, nome, endereco, telefone, cidade)
         arvore_professor.inserir(cod_professor, novo_professor)
-        formato = lambda prof: f"Código:{prof.codProfessor}, Nome:{prof.nome},Endereço:{prof.endereco}, Telefone:{prof.telefone}, Cidade:{prof.cidade.codCidade}\n"
-        arvore_professor.salvar("Dados/professor.txt", formato)
+        formato = lambda \
+                prof: f"{prof.codProfessor}, {prof.nome}, {prof.endereco}, {prof.telefone}, {prof.cidade.descricao}, {prof.cidade.estado}\n"
+        arvore_professor.salvar("Dados/professores.txt", formato)
         print("\nProfessor incluído com sucesso!")
-        print("-" * 30)
-    except ValueError:
-        print("\nCódigo inválido. Digite um numero inteiro.")
+    except (ValueError, IndexError):
+        print("\nDados inválidos. Por favor, tente novamente.")
 
 #------- Área da Modalidade -------
 def construtor_modalidade(data, **carrega):
     arvore_professor = carrega['arvore_professor']
     professor = arvore_professor.buscar(int(data[5]))
     if professor:
-        return Modalidade(int(data[0]), data[1], professor,float(data[2]), int(data[3]), int(data[4]))
+        return Modalidade(int(data[0]), data[1], professor, float(data[2]), int(data[3]), int(data[4]))
     return None
 
 def incluir_modalidade(arvore_modalidade, arvore_professor):
     try:
-        cod_modalidade = int(input("Digite o codigo do Professor: "))
+        cod_modalidade = int(input("Digite o codigo da Modalidade: "))
         if arvore_modalidade.buscar(cod_modalidade):
             print("\nErro: Já existe modalidade com esse ID.")
             return
-        desc_modalidade = input("Digite o descricao do modalidade: ")
-        valor = input("Digite o valor da aula: ")
-        limite = input("Digite o limite de alunos: ")
-        total = input("Digite o total de alunos: ")
-        cod_professor = int(input("Digite o Cidade do Professor: "))
+        desc_modalidade = input("Digite a descricao da modalidade: ")
+        valor = float(input("Digite o valor da aula: "))
+        limite = int(input("Digite o limite de alunos: "))
+        total = int(input("Digite o total de alunos atual: "))
+        cod_professor = int(input("Digite o código do Professor: "))
 
-        end_professor = arvore_professor.buscar(cod_professor)
-        if end_professor is None:
-            print("\nCidade não encontrada. Digite novamente.")
+        professor = arvore_professor.buscar(cod_professor)
+        if professor is None:
+            print("\nProfessor não encontrado. Cadastre o professor primeiro.")
             return
 
-        nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, valor, limite, total, end_professor)
+        nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, professor, valor, limite, total)
         arvore_modalidade.inserir(cod_modalidade, nova_modalidade)
-        formato = lambda mod: (f"Código:{mod.cod_modalidade}, Descrição:{mod.desc_modalidade}, Valor da aula:{mod.valorAula}, "
-                               f"Limite de aluno:{mod.limiteAlunos}, Total de alunos:{mod.totaAlunos}, "
-                               f"Professor:{mod.cod_professor.codProfessor}\n")
+        formato = lambda \
+                mod: f"{mod.cod_modalidade}, {mod.desc_Modalidade}, {mod.valorAula}, {mod.limiteAlunos}, {mod.totaAlunos}, {mod.cod_professor.nome}\n"
         arvore_modalidade.salvar("Dados/modalidades.txt", formato)
         print("\nModalidade incluída com sucesso!")
-        print("-" * 30)
-    except ValueError:
-        print("\nCódigo inválido. Digite um numero inteiro.")
+    except (ValueError, IndexError):
+        print("\nDados inválidos. Por favor, tente novamente.")
 
 #------- Área da Matricila -------
 def construtor_matricula(data, **carrega):
@@ -309,28 +304,32 @@ def construtor_matricula(data, **carrega):
     return None
 def incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade):
     try:
-        cod_matricula = int(input("Digite o codigo do Matricula: "))
+        cod_matricula = int(input("Digite o codigo da Matrícula: "))
+        if arvore_matricula.buscar(cod_matricula):
+            print("\nErro: Já existe uma matrícula com este código.")
+            return
         cod_aluno = int(input("Digite o codigo do Aluno: "))
-        cod_modalidade = int(input("Digite o codigo do Modalidade: "))
-        quantidade = input("Digite o quantidade de aulas: ")
+        cod_modalidade = int(input("Digite o codigo da Modalidade: "))
+        qtde_aulas = int(input("Digite a quantidade de aulas: "))
 
         aluno = arvore_aluno.buscar(cod_aluno)
         if aluno is None:
-            print("\nAluno não encontrado. Digite novamente.")
+            print("\nAluno não encontrado.")
             return
 
         modalidade = arvore_modalidade.buscar(cod_modalidade)
         if modalidade is None:
-            print("\nModalidade não encontrada. Digite novamente.")
+            print("\nModalidade não encontrada.")
             return
 
-        nova_matricula = Matricula(cod_matricula, aluno, modalidade, quantidade)
+        nova_matricula = Matricula(cod_matricula, aluno, modalidade, qtde_aulas)
         arvore_matricula.inserir(cod_matricula, nova_matricula)
-        formato = lambda matri: f"Código:{matri.cod_Matricula}, Quantidade de Aulas:{matri.qtdeAulas}, Aluno:{matri.cod_aluno.codAluno}, Modalidade:{matri.cod_modalidade.codModalidade}\n"
+        formato = lambda \
+                matri: f"{matri.cod_Matricula}, {matri.qtdeAulas}, {matri.cod_aluno.nome}, {matri.cod_modalidade.desc_Modalidade}\n"
+        arvore_matricula.salvar("Dados/matriculas.txt", formato)
         print("\nMatrícula feita com sucesso!")
-        print("-" * 30)
-    except ValueError:
-        print("\nCódigo inválido. Digite um numero inteiro.")
+    except (ValueError, IndexError):
+        print("\nDados inválidos. Por favor, tente novamente.")
 
 if __name__ == "__main__":
     os.makedirs("Dados", exist_ok=True)
