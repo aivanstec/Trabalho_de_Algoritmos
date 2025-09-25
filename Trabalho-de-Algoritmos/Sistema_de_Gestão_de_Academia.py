@@ -215,25 +215,16 @@ def incluir_aluno(arvore_aluno, arvore_cidade):
     except (ValueError, IndexError):
         print("\nCódigo inválido. Digite um numero inteiro.")
 
-def consultar_aluno(arvore_alunos, lista_alunos):
-    if not lista_alunos:
-        print("\nNenhum aluno cadastrado.")
-        return
+def consultar_aluno(arvore_alunos):
     try:
         codigo = int(input("Digite o código do aluno que deseja consultar: "))
-        endereco_aluno = arvore_alunos.buscar(codigo)
+        aluno_encontrado = arvore_alunos.buscar(codigo)
 
-        if endereco_aluno is None:
+        if aluno_encontrado is None:
             print("\nAluno não encontrado com este código.")
             return
-
-        aluno_encontrado = lista_alunos[endereco_aluno]
         print("\n--- Ficha do Aluno ---")
-        print(aluno_encontrado)
-        imc = aluno_encontrado.calcular_imc()
-        diagnostico = aluno_encontrado.diagnostico_imc()
-
-        print(f"IMC: {imc:.2f} - Diagnóstico: {diagnostico}")
+        print(f"IMC: {aluno_encontrado.calcular_imc():.2f} - Diagnóstico: {aluno_encontrado.diagnostico_imc()}")
         print("----------------------")
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
