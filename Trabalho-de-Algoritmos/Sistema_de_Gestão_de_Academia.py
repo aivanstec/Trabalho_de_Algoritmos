@@ -177,6 +177,19 @@ def incluir_cidade(arvore_cidade):
     except ValueError:
         print("\nCódigo inválido. Digite um numero inteiro.")
 
+def consultar_cidade(arvore_cidade):
+    try:
+        codigo = int(input("Digite o código da cidade que deseja consultar: "))
+        cidade_encontrada = arvore_cidade.buscar(codigo)
+        if cidade_encontrada is None:
+            print("\nCidade não encontrada com este código.")
+            return
+        print("\n--- Ficha da Cidade ---")
+        print(cidade_encontrada)
+        print("-----------------------")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
 #------- Área da Aluno -------
 def construtor_aluno(data, **carregar):
     arvore_cidade = carregar['arvore_cidade']
@@ -259,6 +272,19 @@ def incluir_professor(arvore_professor, arvore_cidade):
     except (ValueError, IndexError):
         print("\nDados inválidos. Por favor, tente novamente.")
 
+def consultar_professor(arvore_professor):
+    try:
+        codigo = int(input("Digite o código do professor que deseja consultar: "))
+        professor_encontrado = arvore_professor.buscar(codigo)
+        if professor_encontrado is None:
+            print("\nProfessor não encontrado com este código.")
+            return
+        print("\n--- Ficha do Professor ---")
+        print(professor_encontrado)
+        print("--------------------------")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
 #------- Área da Modalidade -------
 def construtor_modalidade(data, **carrega):
     arvore_professor = carrega['arvore_professor']
@@ -292,6 +318,19 @@ def incluir_modalidade(arvore_modalidade, arvore_professor):
         print("\nModalidade incluída com sucesso!")
     except (ValueError, IndexError):
         print("\nDados inválidos. Por favor, tente novamente.")
+
+def consultar_modalidade(arvore_modalidade):
+    try:
+        codigo = int(input("Digite o código da modalidade que deseja consultar: "))
+        modalidade_encontrada = arvore_modalidade.buscar(codigo)
+        if modalidade_encontrada is None:
+            print("\nModalidade não encontrada com este código.")
+            return
+        print("\n--- Ficha da Modalidade ---")
+        print(modalidade_encontrada)
+        print("---------------------------")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
 
 #------- Área da Matricila -------
 def construtor_matricula(data, **carrega):
@@ -331,6 +370,19 @@ def incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade):
     except (ValueError, IndexError):
         print("\nDados inválidos. Por favor, tente novamente.")
 
+def consultar_matricula(arvore_matricula):
+    try:
+        codigo = int(input("Digite o código da matrícula que deseja consultar: "))
+        matricula_encontrada = arvore_matricula.buscar(codigo)
+        if matricula_encontrada is None:
+            print("\nMatrícula não encontrada com este código.")
+            return
+        print("\n--- Ficha da Matrícula ---")
+        print(matricula_encontrada)
+        print("--------------------------")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
 if __name__ == "__main__":
     os.makedirs("Dados", exist_ok=True)
 
@@ -353,7 +405,8 @@ if __name__ == "__main__":
         print("3. Incluir Professor")
         print("4. Incluir Modalidade")
         print("5. Fazer Matrícula")
-        print("6. Consultar Aluno")
+        print("6. Consultar Cidade")
+        print("7. Consultar Aluno")
         print("0. Sair")
 
         opcao = input("Digite sua opcao: ")
@@ -369,6 +422,8 @@ if __name__ == "__main__":
         elif opcao == '5':
             incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade)
         elif opcao == '6':
+            consultar_cidade(arvore_cidade)
+        elif opcao == '7':
             consultar_aluno(arvore_aluno)
         elif opcao == '0':
             print("Encerrando o programa!")
