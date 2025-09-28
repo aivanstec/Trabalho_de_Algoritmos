@@ -218,7 +218,7 @@ def incluir_aluno(arvore_aluno, arvore_cidade):
         novo_aluno = Aluno(cod_aluno, nome, data, peso, altura, cidade)
         arvore_aluno.inserir(cod_aluno, novo_aluno)
         formato = lambda \
-            alu: f"{alu.codAluno}, {alu.nome}, {alu.data}, {alu.peso}, {alu.altura}, {alu.cidade.descricao}, {alu.cidade.estado}\n"
+            alu: f"{alu.codAluno}, {alu.nome}, {alu.data}, {alu.peso}, {alu.altura}, {alu.cidade.codCidade}\n"
         arvore_aluno.salvar("Dados/alunos.txt", formato)
         print("\nAluno incluído com sucesso!")
     except (ValueError, IndexError):
@@ -266,7 +266,7 @@ def incluir_professor(arvore_professor, arvore_cidade):
         novo_professor = Professor(cod_professor, nome, endereco, telefone, cidade)
         arvore_professor.inserir(cod_professor, novo_professor)
         formato = lambda \
-                prof: f"{prof.codProfessor}, {prof.nome}, {prof.endereco}, {prof.telefone}, {prof.cidade.descricao}, {prof.cidade.estado}\n"
+                prof: f"{prof.codProfessor}, {prof.nome}, {prof.endereco}, {prof.telefone}, {prof.cidade.codCidade}\n"
         arvore_professor.salvar("Dados/professores.txt", formato)
         print("\nProfessor incluído com sucesso!")
     except (ValueError, IndexError):
@@ -313,7 +313,7 @@ def incluir_modalidade(arvore_modalidade, arvore_professor):
         nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, professor, valor, limite, total)
         arvore_modalidade.inserir(cod_modalidade, nova_modalidade)
         formato = lambda \
-                mod: f"{mod.cod_modalidade}, {mod.desc_Modalidade}, {mod.valorAula}, {mod.limiteAlunos}, {mod.totaAlunos}, {mod.cod_professor.nome}\n"
+                mod: f"{mod.cod_modalidade}, {mod.desc_Modalidade}, {mod.valorAula}, {mod.limiteAlunos}, {mod.totaAlunos}, {mod.professor.codProfessor}\n"
         arvore_modalidade.salvar("Dados/modalidades.txt", formato)
         print("\nModalidade incluída com sucesso!")
     except (ValueError, IndexError):
@@ -364,7 +364,7 @@ def incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade):
         nova_matricula = Matricula(cod_matricula, aluno, modalidade, qtde_aulas)
         arvore_matricula.inserir(cod_matricula, nova_matricula)
         formato = lambda \
-                matri: f"{matri.cod_Matricula}, {matri.qtdeAulas}, {matri.cod_aluno.nome}, {matri.cod_modalidade.desc_Modalidade}\n"
+                matri: f"{matri.cod_Matricula}, {matri.qtdeAulas}, {matri.aluno.codAluno}, {matri.modalidade.codModalidade}\n"
         arvore_matricula.salvar("Dados/matriculas.txt", formato)
         print("\nMatrícula feita com sucesso!")
     except (ValueError, IndexError):
@@ -395,7 +395,7 @@ if __name__ == "__main__":
     carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
     carregar_dados("Dados/alunos.txt", arvore_aluno, construtor_aluno, arvore_cidade = arvore_cidade)
     carregar_dados("Dados/professores.txt", arvore_professor, construtor_professor, arvore_cidade = arvore_cidade)
-    carregar_dados("Dados/modalidade.txt", arvore_modalidade, construtor_modalidade, arvore_professor = arvore_professor)
+    carregar_dados("Dados/modalidades.txt", arvore_modalidade, construtor_modalidade, arvore_professor = arvore_professor)
     carregar_dados("Dados/matriculas.txt", arvore_matricula, construtor_matricula, arvore_aluno = arvore_aluno, arvore_modalidade = arvore_modalidade)
 
     while True:
