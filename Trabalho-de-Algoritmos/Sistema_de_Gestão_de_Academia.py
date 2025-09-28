@@ -60,7 +60,7 @@ class Professor:
 #------- Classe Modalidade -------
 class Modalidade:
     def __init__(self, codigo, descricao, professor, valorAula, limiteAlunos, totaAlunos):
-        self.codModalidade = codigo
+        self.cod_modalidade = codigo
         self.desc_Modalidade = descricao
         self.cod_professor = professor
         self.valorAula = valorAula
@@ -68,7 +68,7 @@ class Modalidade:
         self.totaAlunos = totaAlunos
 
     def __str__(self):
-        return (f"Código da Modalidade: {self.codModalidade}, Descrição da Modalidade: {self.desc_Modalidade}"
+        return (f"Código da Modalidade: {self.cod_modalidade}, Descrição da Modalidade: {self.desc_Modalidade}"
                 f"\nCódigo do Professor: {self.cod_professor.nome}, Valor da Aula: {self.valorAula}, Limite de Alunos: {self.limiteAlunos}, Total de Alunos: {self.totaAlunos} ")
 
 #------- Classe Matrícila -------
@@ -312,8 +312,7 @@ def incluir_modalidade(arvore_modalidade, arvore_professor):
 
         nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, professor, valor, limite, total)
         arvore_modalidade.inserir(cod_modalidade, nova_modalidade)
-        formato = lambda \
-                mod: f"{mod.cod_modalidade}, {mod.desc_Modalidade}, {mod.valorAula}, {mod.limiteAlunos}, {mod.totaAlunos}, {mod.professor.codProfessor}\n"
+        formato = lambda mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
         arvore_modalidade.salvar("Dados/modalidades.txt", formato)
         print("\nModalidade incluída com sucesso!")
     except (ValueError, IndexError):
@@ -363,8 +362,7 @@ def incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade):
 
         nova_matricula = Matricula(cod_matricula, aluno, modalidade, qtde_aulas)
         arvore_matricula.inserir(cod_matricula, nova_matricula)
-        formato = lambda \
-                matri: f"{matri.cod_Matricula}, {matri.qtdeAulas}, {matri.aluno.codAluno}, {matri.modalidade.codModalidade}\n"
+        formato = lambda matri: f"{matri.cod_Matricula},{matri.qtdeAulas},{matri.cod_aluno.codAluno},{matri.cod_modalidade.cod_modalidade}\n"
         arvore_matricula.salvar("Dados/matriculas.txt", formato)
         print("\nMatrícula feita com sucesso!")
     except (ValueError, IndexError):
