@@ -484,48 +484,123 @@ def excluir_matricula(arvore_matricula):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
+def menu_cadastros(arvores):
+    while True:
+        print("\n--- SESSÃO DE CADASTROS ---")
+        print("1. Incluir Cidade")
+        print("2. Incluir Professor")
+        print("3. Incluir Aluno")
+        print("4. Incluir Modalidade")
+        print("5. Fazer Matrícula")
+        print("9. Voltar ao Menu Principal")
+        opcao = input("Digite sua opcao: ")
+
+        if opcao == '1':
+            incluir_cidade(arvores['cidade'])
+        elif opcao == '2':
+            incluir_professor(arvores['professor'], arvores['cidade'])
+        elif opcao == '3':
+            incluir_aluno(arvores['aluno'], arvores['cidade'])
+        elif opcao == '4':
+            incluir_modalidade(arvores['modalidade'], arvores['professor'])
+        elif opcao == '5':
+            incluir_matricula(arvores['matricula'], arvores['aluno'], arvores['modalidade'])
+        elif opcao == '9':
+            print("Voltando ao menu principal...")
+            break
+        else:
+            print("Opção inválida.")
+
+
+def menu_consultas(arvores):
+    while True:
+        print("\n--- SESSÃO DE CONSULTAS ---")
+        print("1. Consultar Cidade")
+        print("2. Consultar Professor")
+        print("3. Consultar Aluno")
+        print("4. Consultar Modalidade")
+        print("5. Consultar Matrícula")
+        print("9. Voltar ao Menu Principal")
+        opcao = input("Digite sua opcao: ")
+
+        if opcao == '1':
+            consultar_cidade(arvores['cidade'])
+        elif opcao == '2':
+            consultar_professor(arvores['professor'])
+        elif opcao == '3':
+            consultar_aluno(arvores['aluno'])
+        elif opcao == '4':
+            consultar_modalidade(arvores['modalidade'])
+        elif opcao == '5':
+            consultar_matricula(arvores['matricula'])
+        elif opcao == '9':
+            print("Voltando ao menu principal...")
+            break
+        else:
+            print("Opção inválida.")
+
+
+def menu_exclusoes(arvores):
+    while True:
+        print("\n--- SESSÃO DE EXCLUSÕES ---")
+        print("1. Excluir Cidade")
+        print("2. Excluir Professor")
+        print("3. Excluir Aluno")
+        print("4. Excluir Modalidade")
+        print("5. Excluir Matrícula")
+        print("9. Voltar ao Menu Principal")
+        opcao = input("Digite sua opcao: ")
+
+        if opcao == '1':
+            excluir_cidade(arvores['cidade'], arvores['aluno'], arvores['professor'])
+        elif opcao == '2':
+            excluir_professor(arvores['professor'], arvores['modalidade'])
+        elif opcao == '3':
+            excluir_aluno(arvores['aluno'], arvores['matricula'])
+        elif opcao == '4':
+            excluir_modalidade(arvores['modalidade'], arvores['matricula'])
+        elif opcao == '5':
+            excluir_matricula(arvores['matricula'])
+        elif opcao == '9':
+            print("Voltando ao menu principal...")
+            break
+        else:
+            print("Opção inválida.")
+
 if __name__ == "__main__":
     os.makedirs("Dados", exist_ok=True)
 
-    arvore_cidade = ArvoreBinaria()
-    arvore_aluno = ArvoreBinaria()
-    arvore_professor = ArvoreBinaria()
-    arvore_modalidade = ArvoreBinaria()
-    arvore_matricula = ArvoreBinaria()
+    arvores = {
+        "cidade": ArvoreBinaria(),
+        "aluno": ArvoreBinaria(),
+        "professor": ArvoreBinaria(),
+        "modalidade": ArvoreBinaria(),
+        "matricula": ArvoreBinaria()
+    }
 
-    carregar_dados("Dados/cidades.txt", arvore_cidade, construtor_cidade)
-    carregar_dados("Dados/alunos.txt", arvore_aluno, construtor_aluno, arvore_cidade = arvore_cidade)
-    carregar_dados("Dados/professores.txt", arvore_professor, construtor_professor, arvore_cidade = arvore_cidade)
-    carregar_dados("Dados/modalidades.txt", arvore_modalidade, construtor_modalidade, arvore_professor = arvore_professor)
-    carregar_dados("Dados/matriculas.txt", arvore_matricula, construtor_matricula, arvore_aluno = arvore_aluno, arvore_modalidade = arvore_modalidade)
+    carregar_dados("Dados/cidades.txt", arvores['cidade'], construtor_cidade)
+    carregar_dados("Dados/professores.txt", arvores['professor'], construtor_professor, arvore_cidade=arvores['cidade'])
+    carregar_dados("Dados/alunos.txt", arvores['aluno'], construtor_aluno, arvore_cidade=arvores['cidade'])
+    carregar_dados("Dados/modalidades.txt", arvores['modalidade'], construtor_modalidade,
+                   arvore_professor=arvores['professor'])
+    carregar_dados("Dados/matriculas.txt", arvores['matricula'], construtor_matricula, arvore_aluno=arvores['aluno'],
+                   arvore_modalidade=arvores['modalidade'])
 
     while True:
-        print("\n------ MENU PRINCIPAL ------")
-        print("1. Incluir Cidade")
-        print("2. Incluir Aluno")
-        print("3. Incluir Professor")
-        print("4. Incluir Modalidade")
-        print("5. Fazer Matrícula")
-        print("6. Consultar Cidade")
-        print("7. Consultar Aluno")
+        print("\n---------- MENU PRINCIPAL ----------")
+        print("1. Sessão de Cadastros")
+        print("2. Sessão de Consultas")
+        print("3. Sessão de Exclusões")
         print("0. Sair")
 
         opcao = input("Digite sua opcao: ")
 
         if opcao == '1':
-            incluir_cidade(arvore_cidade)
+            menu_cadastros(arvores)
         elif opcao == '2':
-            incluir_aluno(arvore_aluno, arvore_cidade)
+            menu_consultas(arvores)
         elif opcao == '3':
-            incluir_professor(arvore_professor, arvore_cidade)
-        elif opcao == '4':
-            incluir_modalidade(arvore_modalidade, arvore_professor)
-        elif opcao == '5':
-            incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade)
-        elif opcao == '6':
-            consultar_cidade(arvore_cidade)
-        elif opcao == '7':
-            consultar_aluno(arvore_aluno)
+            menu_exclusoes(arvores)
         elif opcao == '0':
             print("Encerrando o programa!")
             break
