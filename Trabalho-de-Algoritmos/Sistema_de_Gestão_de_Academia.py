@@ -492,7 +492,7 @@ def menu_cadastros(arvores):
         print("3. Incluir Aluno")
         print("4. Incluir Modalidade")
         print("5. Fazer Matrícula")
-        print("9. Voltar ao Menu Principal")
+        print("6. Voltar ao Menu Principal")
         opcao = input("Digite sua opcao: ")
 
         if opcao == '1':
@@ -505,7 +505,7 @@ def menu_cadastros(arvores):
             incluir_modalidade(arvores['modalidade'], arvores['professor'])
         elif opcao == '5':
             incluir_matricula(arvores['matricula'], arvores['aluno'], arvores['modalidade'])
-        elif opcao == '9':
+        elif opcao == '6':
             print("Voltando ao menu principal...")
             break
         else:
@@ -520,7 +520,7 @@ def menu_consultas(arvores):
         print("3. Consultar Aluno")
         print("4. Consultar Modalidade")
         print("5. Consultar Matrícula")
-        print("9. Voltar ao Menu Principal")
+        print("6. Voltar ao Menu Principal")
         opcao = input("Digite sua opcao: ")
 
         if opcao == '1':
@@ -533,7 +533,7 @@ def menu_consultas(arvores):
             consultar_modalidade(arvores['modalidade'])
         elif opcao == '5':
             consultar_matricula(arvores['matricula'])
-        elif opcao == '9':
+        elif opcao == '6':
             print("Voltando ao menu principal...")
             break
         else:
@@ -548,7 +548,7 @@ def menu_exclusoes(arvores):
         print("3. Excluir Aluno")
         print("4. Excluir Modalidade")
         print("5. Excluir Matrícula")
-        print("9. Voltar ao Menu Principal")
+        print("6. Voltar ao Menu Principal")
         opcao = input("Digite sua opcao: ")
 
         if opcao == '1':
@@ -561,7 +561,7 @@ def menu_exclusoes(arvores):
             excluir_modalidade(arvores['modalidade'], arvores['matricula'])
         elif opcao == '5':
             excluir_matricula(arvores['matricula'])
-        elif opcao == '9':
+        elif opcao == '6':
             print("Voltando ao menu principal...")
             break
         else:
