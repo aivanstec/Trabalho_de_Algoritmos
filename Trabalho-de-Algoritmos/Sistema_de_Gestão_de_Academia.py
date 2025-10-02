@@ -157,6 +157,37 @@ def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
     except Exception as e:
         print(f"Erro ao carregar '{arquivo}': {e}")
 
+    def remover(self, codigo):
+        self.raiz = self.excluir_indece(self.raiz, codigo)
+
+    def encontrar_indece(self, indece_atual):
+        while indece_atual and indece_atual.direita is not None:
+            indece_atual = indece_atual.direita
+        return indece_atual
+
+    def excluir_indece(self, indece_atual, codigo):
+        if indece_atual is None:
+            return indece_atual
+
+        if codigo < indece_atual.codigo:
+            indece_atual.esquerda = self.excluir_indece(indece_atual.esquerda, codigo)
+        elif codigo > indece_atual.codigo:
+            indece_atual.direita = self.excluir_indece(indece_atual.direita, codigo)
+        else:
+            if indece_atual.esquerda is None:
+                return indece_atual.direita
+            elif indece_atual.direita is None:
+                return indece_atual.esquerda
+
+            predecessor = self.encontrar_indece(indece_atual.esquerda)
+
+            indece_atual.codigo = predecessor.codigo
+            indece_atual.dado = predecessor.dado
+
+            indece_atual.esquerda = self.excluir_indece(indece_atual.esquerda, predecessor.codigo)
+
+        return indece_atual
+
 #------- Área da Cidade -------
 def construtor_cidade(data, **carregar):
     return Cidade(int(data[0]), data[1], data[2])
@@ -187,6 +218,20 @@ def consultar_cidade(arvore_cidade):
         print("\n--- Ficha da Cidade ---")
         print(cidade_encontrada)
         print("-----------------------")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
+def excluir_cidade(arvore_cidade, arvore_aluno, arvore_professor):
+    try:
+        codigo = int(input("Digite o código da cidade a ser excluída: "))
+        if arvore_cidade.buscar(codigo) is None:
+            print("\nCidade não encontrada com este código.")
+            return
+
+        arvore_cidade.remover(codigo)
+        formato = lambda cid: f"{cid.codCidade},{cid.descricao},{cid.estado}\n"
+        arvore_cidade.salvar("Dados/cidades.txt", formato)
+        print("\nCidade excluída com sucesso.")
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
@@ -239,6 +284,20 @@ def consultar_aluno(arvore_alunos):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
+def excluir_aluno(arvore_aluno, arvore_matricula):
+    try:
+        codigo = int(input("Digite o código do aluno a ser excluído: "))
+        if arvore_aluno.buscar(codigo) is None:
+            print("\nAluno não encontrado com este código.")
+            return
+
+        arvore_aluno.remover(codigo)
+        formato = lambda a: f"{a.codAluno},{a.nome},{a.data},{a.peso},{a.altura},{a.cidade.codCidade}\n"
+        arvore_aluno.salvar("Dados/alunos.txt", formato)
+        print("\nAluno excluído com sucesso.")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
 #------- Área da Professor -------
 def construtor_professor(data, **carrega):
     arvore_cidade = carrega['arvore_cidade']
@@ -282,6 +341,20 @@ def consultar_professor(arvore_professor):
         print("\n--- Ficha do Professor ---")
         print(professor_encontrado)
         print("--------------------------")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
+def excluir_professor(arvore_professor, arvore_modalidade):
+    try:
+        codigo = int(input("Digite o código do professor a ser excluído: "))
+        if arvore_professor.buscar(codigo) is None:
+            print("\nProfessor não encontrado com este código.")
+            return
+
+        arvore_professor.remover(codigo)
+        formato = lambda p: f"{p.codProfessor},{p.nome},{p.endereco},{p.telefone},{p.cidade.codCidade}\n"
+        arvore_professor.salvar("Dados/professores.txt", formato)
+        print("\nProfessor excluído com sucesso.")
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
@@ -331,6 +404,21 @@ def consultar_modalidade(arvore_modalidade):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
+def excluir_modalidade(arvore_modalidade, arvore_matricula):
+    try:
+        codigo = int(input("Digite o código da modalidade a ser excluída: "))
+        if arvore_modalidade.buscar(codigo) is None:
+            print("\nModalidade não encontrada com este código.")
+            return
+
+        arvore_modalidade.remover(codigo)
+        formato = lambda \
+            m: f"{m.cod_modalidade},{m.desc_Modalidade},{m.valorAula},{m.limiteAlunos},{m.totaAlunos},{m.cod_professor.codProfessor}\n"
+        arvore_modalidade.salvar("Dados/modalidades.txt", formato)
+        print("\nModalidade excluída com sucesso.")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
 #------- Área da Matricila -------
 def construtor_matricula(data, **carrega):
     arvore_aluno = carrega['arvore_aluno']
@@ -340,6 +428,7 @@ def construtor_matricula(data, **carrega):
     if modalidade and aluno:
         return Matricula(int(data[0]), aluno, modalidade, int(data[1]))
     return None
+
 def incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade):
     try:
         cod_matricula = int(input("Digite o codigo da Matrícula: "))
@@ -378,6 +467,20 @@ def consultar_matricula(arvore_matricula):
         print("\n--- Ficha da Matrícula ---")
         print(matricula_encontrada)
         print("--------------------------")
+    except ValueError:
+        print("\nEntrada inválida. O código deve ser um número.")
+
+def excluir_matricula(arvore_matricula):
+    try:
+        codigo = int(input("Digite o código da matrícula a ser excluída: "))
+        if arvore_matricula.buscar(codigo) is None:
+            print("\nMatrícula não encontrada com este código.")
+            return
+
+        arvore_matricula.remover(codigo)
+        formato = lambda m: f"{m.cod_Matricula},{m.qtdeAulas},{m.cod_aluno.codAluno},{m.cod_modalidade.cod_modalidade}\n"
+        arvore_matricula.salvar("Dados/matriculas.txt", formato)
+        print("\nMatrícula excluída com sucesso.")
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
