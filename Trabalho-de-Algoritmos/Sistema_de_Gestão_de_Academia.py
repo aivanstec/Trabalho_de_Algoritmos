@@ -256,7 +256,7 @@ class App(ctk.CTk):
         self.arvores = arvores
 
         self.title("PowerOn")
-        self.geometry("800x600")
+        self.geometry("1500x768")
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
 
