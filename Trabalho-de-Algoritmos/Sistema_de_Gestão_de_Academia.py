@@ -1,15 +1,18 @@
 import os
 
-#------- Classe Cidade -------
+
+# ------- Classe Cidade -------
 class Cidade:
     def __init__(self, codigo, descricao, estado):
         self.codCidade = codigo
         self.descricao = descricao
         self.estado = estado
+
     def __str__(self):
         return f"Código: {self.codCidade}, Descrição: {self.descricao}, Estado: {self.estado}"
 
-#------- Classe Aluno -------#
+
+# ------- Classe Aluno -------#
 class Aluno:
     def __init__(self, codigo, nome, dataNascimento, peso, altura, cidade):
         self.codAluno = codigo
@@ -23,7 +26,7 @@ class Aluno:
         return (f"Código do Aluno: {self.codAluno}"
                 f"\nNome: {self.nome}, Data de Nascimento: {self.data} "
                 f"\nPeso: {self.peso} kg, Altura: {self.altura} "
-                f"\nCidade: {self.cidade.descricao} {self.cidade.estado}")
+                f"\nCidade: {self.cidade.descricao} ({self.cidade.estado})")
 
     def calcular_imc(self):
         if self.altura > 0:
@@ -43,7 +46,8 @@ class Aluno:
         else:
             return "Obesidade"
 
-#------- Classe Professor -------
+
+# ------- Classe Professor -------
 class Professor:
     def __init__(self, codigo, nome, endereco, telefone, cidade):
         self.codProfessor = codigo
@@ -53,11 +57,12 @@ class Professor:
         self.cidade = cidade
 
     def __str__(self):
-        return (f"Código do Professor: {self.codProfessor}, "
+        return (f"Código do Professor: {self.codProfessor}"
                 f"\nNome: {self.nome},  Telefone: {self.telefone}"
-                f"\nEndereço: {self.endereco} Cidade: {self.cidade.descricao} {self.cidade.estado}")
+                f"\nEndereço: {self.endereco} Cidade: {self.cidade.descricao} ({self.cidade.estado})")
 
-#------- Classe Modalidade -------
+
+# ------- Classe Modalidade -------
 class Modalidade:
     def __init__(self, codigo, descricao, professor, valorAula, limiteAlunos, totaAlunos):
         self.cod_modalidade = codigo
@@ -68,10 +73,11 @@ class Modalidade:
         self.totaAlunos = totaAlunos
 
     def __str__(self):
-        return (f"Código da Modalidade: {self.cod_modalidade}, Descrição da Modalidade: {self.desc_Modalidade}"
-                f"\nCódigo do Professor: {self.cod_professor.nome}, Valor da Aula: {self.valorAula}, Limite de Alunos: {self.limiteAlunos}, Total de Alunos: {self.totaAlunos} ")
+        return (f"Código da Modalidade: {self.cod_modalidade}, Descrição: {self.desc_Modalidade}"
+                f"\nProfessor: {self.cod_professor.nome}, Valor da Aula: R${self.valorAula:.2f}, Limite de Alunos: {self.limiteAlunos}, Total de Alunos: {self.totaAlunos}")
 
-#------- Classe Matrícila -------
+
+# ------- Classe Matrícula -------
 class Matricula:
     def __init__(self, codigo, aluno, modalidade, qtdeAulas):
         self.cod_Matricula = codigo
@@ -80,9 +86,11 @@ class Matricula:
         self.qtdeAulas = qtdeAulas
 
     def __str__(self):
-        return (f"Código da Matrícula: {self.cod_Matricula}, Código do Aluno: {self.cod_aluno.nome}, Código da Modalidade: {self.cod_modalidade.desc_Modalidade}, Quantidade de Aulas: {self.qtdeAulas}")
+        return (
+            f"Código da Matrícula: {self.cod_Matricula}\nAluno: {self.cod_aluno.nome}\nModalidade: {self.cod_modalidade.desc_Modalidade}\nQuantidade de Aulas: {self.qtdeAulas}")
 
-#------- Classe Indece -------
+
+# ------- Classe Indece (Nó da Árvore) -------
 class Indece:
     def __init__(self, codigo, dado_obj):
         self.codigo = codigo
@@ -90,7 +98,8 @@ class Indece:
         self.esquerda = None
         self.direita = None
 
-#------- Árvore Binaria -------
+
+# ------- Árvore Binária -------
 class ArvoreBinaria:
     def __init__(self):
         self.raiz = None
@@ -126,11 +135,11 @@ class ArvoreBinaria:
 
     def salvar(self, arquivo, formatador_arquivo):
         try:
-            with open(arquivo, "w", encoding= 'utf-8') as arq:
+            with open(arquivo, "w", encoding='utf-8') as arq:
                 self.salvar_arquivo(self.raiz, arq, formatador_arquivo)
             print(f"\nArquivo '{arquivo}' salvo com sucesso!")
         except Exception as e:
-            print(f"\nErro falha ao salvar o arquivo '{arquivo}'. Detalhes: {e}")
+            print(f"\nErro: falha ao salvar o arquivo '{arquivo}'. Detalhes: {e}")
 
     def salvar_arquivo(self, indece_atual, arquivo, formatador_arquivo):
         if indece_atual is not None:
@@ -140,29 +149,12 @@ class ArvoreBinaria:
             arquivo.write(linha)
             self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
-def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
-    try:
-        with open(arquivo, "r", encoding='utf-8') as f:
-            for linha in f:
-                linha = linha.strip()
-                if linha:
-                    dados = [d.strip() for d in linha.split(',')]
-                    obj = construtor_arq(dados, **carregar)
-                    if obj:
-                        codigo_obj = getattr(obj, list(obj.__dict__.keys())[0])
-                        arvore.inserir(codigo_obj, obj)
-        print(f"Dados de '{arquivo}' carregados.")
-    except FileNotFoundError:
-        print(f"Arquivo '{arquivo}' não encontrado.")
-    except Exception as e:
-        print(f"Erro ao carregar '{arquivo}': {e}")
-
     def remover(self, codigo):
         self.raiz = self.excluir_indece(self.raiz, codigo)
 
     def encontrar_indece(self, indece_atual):
-        while indece_atual and indece_atual.direita is not None:
-            indece_atual = indece_atual.direita
+        while indece_atual and indece_atual.esquerda is not None:
+            indece_atual = indece_atual.esquerda
         return indece_atual
 
     def excluir_indece(self, indece_atual, codigo):
@@ -179,16 +171,54 @@ def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
             elif indece_atual.direita is None:
                 return indece_atual.esquerda
 
-            predecessor = self.encontrar_indece(indece_atual.esquerda)
-
-            indece_atual.codigo = predecessor.codigo
-            indece_atual.dado = predecessor.dado
-
-            indece_atual.esquerda = self.excluir_indece(indece_atual.esquerda, predecessor.codigo)
+            sucessor = self.encontrar_indece(indece_atual.direita)
+            indece_atual.codigo = sucessor.codigo
+            indece_atual.dado = sucessor.dado
+            indece_atual.direita = self.excluir_indece(indece_atual.direita, sucessor.codigo)
 
         return indece_atual
 
-#------- Área da Cidade -------
+    def percorrer(self):
+        dados = []
+        self.percorrer_raiz(self.raiz, dados)
+        return dados
+
+    def percorrer_raiz(self, indece_atual, dados):
+        if indece_atual is not None:
+            self.percorrer_raiz(indece_atual.esquerda, dados)
+            dados.append(indece_atual.dado)
+            self.percorrer_raiz(indece_atual.direita, dados)
+
+def leitura_exaustiva(arvore, nome_tabela):
+    print(f"\n--- Leitura Exaustiva de {nome_tabela} ---")
+    todos_os_itens = arvore.percorrer()
+    if not todos_os_itens:
+        print(f"Nenhum registro encontrado em {nome_tabela}.")
+        return
+    for item in todos_os_itens:
+        print(item)
+        print("-" * 20)
+    print(f"Total de {len(todos_os_itens)} registros.")
+
+# ------- Funções de Carregamento -------
+def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
+    try:
+        with open(arquivo, "r", encoding='utf-8') as f:
+            for linha in f:
+                linha = linha.strip()
+                if linha:
+                    dados = [d.strip() for d in linha.split(',')]
+                    obj = construtor_arq(dados, **carregar)
+                    if obj:
+                        codigo_obj = getattr(obj, list(obj.__dict__.keys())[0])
+                        arvore.inserir(codigo_obj, obj)
+        print(f"Dados de '{arquivo}' carregados.")
+    except FileNotFoundError:
+        print(f"Arquivo '{arquivo}' não encontrado. Será criado um novo ao salvar.")
+    except Exception as e:
+        print(f"Erro ao carregar dados de '{arquivo}': {e}")
+
+# ------- Área da Cidade -------
 def construtor_cidade(data, **carregar):
     return Cidade(int(data[0]), data[1], data[2])
 
@@ -202,7 +232,7 @@ def incluir_cidade(arvore_cidade):
         estado = input("Digite o Estado (UF): ")
         nova_cidade = Cidade(cod_cidade, descricao, estado)
         arvore_cidade.inserir(cod_cidade, nova_cidade)
-        formato = lambda cid: f"{cid.codCidade}, {cid.descricao}, {cid.estado}\n"
+        formato = lambda cid: f"{cid.codCidade},{cid.descricao},{cid.estado}\n"
         arvore_cidade.salvar("Dados/cidades.txt", formato)
         print("\nCidade incluída com sucesso!")
     except ValueError:
@@ -228,6 +258,15 @@ def excluir_cidade(arvore_cidade, arvore_aluno, arvore_professor):
             print("\nCidade não encontrada com este código.")
             return
 
+        for aluno in arvore_aluno.percorrer():
+            if aluno.cidade.codCidade == codigo:
+                print(f"\nErro: A cidade não pode ser excluída, pois o aluno '{aluno.nome}' está cadastrado nela.")
+                return
+        for prof in arvore_professor.percorrer():
+            if prof.cidade.codCidade == codigo:
+                print(f"\nErro: A cidade não pode ser excluída, pois o professor '{prof.nome}' está cadastrado nela.")
+                return
+
         arvore_cidade.remover(codigo)
         formato = lambda cid: f"{cid.codCidade},{cid.descricao},{cid.estado}\n"
         arvore_cidade.salvar("Dados/cidades.txt", formato)
@@ -235,7 +274,10 @@ def excluir_cidade(arvore_cidade, arvore_aluno, arvore_professor):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
-#------- Área da Aluno -------
+def ler_cidades(arvore_cidade):
+    leitura_exaustiva(arvore_cidade, "Cidades")
+
+# ------- Área do Aluno -------
 def construtor_aluno(data, **carregar):
     arvore_cidade = carregar['arvore_cidade']
     cidade = arvore_cidade.buscar(int(data[5]))
@@ -262,8 +304,7 @@ def incluir_aluno(arvore_aluno, arvore_cidade):
 
         novo_aluno = Aluno(cod_aluno, nome, data, peso, altura, cidade)
         arvore_aluno.inserir(cod_aluno, novo_aluno)
-        formato = lambda \
-            alu: f"{alu.codAluno}, {alu.nome}, {alu.data}, {alu.peso}, {alu.altura}, {alu.cidade.codCidade}\n"
+        formato = lambda alu: f"{alu.codAluno},{alu.nome},{alu.data},{alu.peso},{alu.altura},{alu.cidade.codCidade}\n"
         arvore_aluno.salvar("Dados/alunos.txt", formato)
         print("\nAluno incluído com sucesso!")
     except (ValueError, IndexError):
@@ -284,12 +325,18 @@ def consultar_aluno(arvore_alunos):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
+
 def excluir_aluno(arvore_aluno, arvore_matricula):
     try:
         codigo = int(input("Digite o código do aluno a ser excluído: "))
         if arvore_aluno.buscar(codigo) is None:
             print("\nAluno não encontrado com este código.")
             return
+
+        for matricula in arvore_matricula.percorrer():
+            if matricula.cod_aluno.codAluno == codigo:
+                print(f"\nErro: O aluno não pode ser excluído, pois está na matrícula cód. {matricula.cod_Matricula}.")
+                return
 
         arvore_aluno.remover(codigo)
         formato = lambda a: f"{a.codAluno},{a.nome},{a.data},{a.peso},{a.altura},{a.cidade.codCidade}\n"
@@ -298,11 +345,14 @@ def excluir_aluno(arvore_aluno, arvore_matricula):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
-#------- Área da Professor -------
-def construtor_professor(data, **carrega):
-    arvore_cidade = carrega['arvore_cidade']
+def ler_alunos(arvore_aluno):
+    leitura_exaustiva(arvore_aluno, "Alunos")
+
+# ------- Área do Professor -------
+def construtor_professor(data, **carregar):
+    arvore_cidade = carregar['arvore_cidade']
     cidade = arvore_cidade.buscar(int(data[4]))
-    if carrega:
+    if carregar:
         return Professor(int(data[0]), data[1], data[2], data[3], cidade)
     return None
 
@@ -325,7 +375,7 @@ def incluir_professor(arvore_professor, arvore_cidade):
         novo_professor = Professor(cod_professor, nome, endereco, telefone, cidade)
         arvore_professor.inserir(cod_professor, novo_professor)
         formato = lambda \
-                prof: f"{prof.codProfessor}, {prof.nome}, {prof.endereco}, {prof.telefone}, {prof.cidade.codCidade}\n"
+            prof: f"{prof.codProfessor},{prof.nome},{prof.endereco},{prof.telefone},{prof.cidade.codCidade}\n"
         arvore_professor.salvar("Dados/professores.txt", formato)
         print("\nProfessor incluído com sucesso!")
     except (ValueError, IndexError):
@@ -351,6 +401,11 @@ def excluir_professor(arvore_professor, arvore_modalidade):
             print("\nProfessor não encontrado com este código.")
             return
 
+        for mod in arvore_modalidade.percorrer():
+            if mod.cod_professor.codProfessor == codigo:
+                print(f"\nErro: O professor não pode ser excluído, pois leciona a modalidade '{mod.desc_Modalidade}'.")
+                return
+
         arvore_professor.remover(codigo)
         formato = lambda p: f"{p.codProfessor},{p.nome},{p.endereco},{p.telefone},{p.cidade.codCidade}\n"
         arvore_professor.salvar("Dados/professores.txt", formato)
@@ -358,9 +413,12 @@ def excluir_professor(arvore_professor, arvore_modalidade):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
-#------- Área da Modalidade -------
-def construtor_modalidade(data, **carrega):
-    arvore_professor = carrega['arvore_professor']
+def ler_professores(arvore_professor):
+    leitura_exaustiva(arvore_professor, "Professores")
+
+# ------- Área da Modalidade -------
+def construtor_modalidade(data, **carregar):
+    arvore_professor = carregar['arvore_professor']
     professor = arvore_professor.buscar(int(data[5]))
     if professor:
         return Modalidade(int(data[0]), data[1], professor, float(data[2]), int(data[3]), int(data[4]))
@@ -375,7 +433,7 @@ def incluir_modalidade(arvore_modalidade, arvore_professor):
         desc_modalidade = input("Digite a descricao da modalidade: ")
         valor = float(input("Digite o valor da aula: "))
         limite = int(input("Digite o limite de alunos: "))
-        total = int(input("Digite o total de alunos atual: "))
+        total = 0
         cod_professor = int(input("Digite o código do Professor: "))
 
         professor = arvore_professor.buscar(cod_professor)
@@ -385,7 +443,8 @@ def incluir_modalidade(arvore_modalidade, arvore_professor):
 
         nova_modalidade = Modalidade(cod_modalidade, desc_modalidade, professor, valor, limite, total)
         arvore_modalidade.inserir(cod_modalidade, nova_modalidade)
-        formato = lambda mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
+        formato = lambda \
+            mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
         arvore_modalidade.salvar("Dados/modalidades.txt", formato)
         print("\nModalidade incluída com sucesso!")
     except (ValueError, IndexError):
@@ -411,6 +470,12 @@ def excluir_modalidade(arvore_modalidade, arvore_matricula):
             print("\nModalidade não encontrada com este código.")
             return
 
+        for matricula in arvore_matricula.percorrer():
+            if matricula.cod_modalidade.cod_modalidade == codigo:
+                print(
+                    f"\nErro: A modalidade não pode ser excluída, pois está na matrícula cód. {matricula.cod_Matricula}.")
+                return
+
         arvore_modalidade.remover(codigo)
         formato = lambda \
             m: f"{m.cod_modalidade},{m.desc_Modalidade},{m.valorAula},{m.limiteAlunos},{m.totaAlunos},{m.cod_professor.codProfessor}\n"
@@ -419,10 +484,13 @@ def excluir_modalidade(arvore_modalidade, arvore_matricula):
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
-#------- Área da Matricila -------
-def construtor_matricula(data, **carrega):
-    arvore_aluno = carrega['arvore_aluno']
-    arvore_modalidade = carrega['arvore_modalidade']
+def ler_modalidades(arvore_modalidade):
+    leitura_exaustiva(arvore_modalidade, "Modalidades")
+
+# ------- Área da Matrícula -------
+def construtor_matricula(data, **carregar):
+    arvore_aluno = carregar['arvore_aluno']
+    arvore_modalidade = carregar['arvore_modalidade']
     aluno = arvore_aluno.buscar(int(data[2]))
     modalidade = arvore_modalidade.buscar(int(data[3]))
     if modalidade and aluno:
@@ -451,7 +519,8 @@ def incluir_matricula(arvore_matricula, arvore_aluno, arvore_modalidade):
 
         nova_matricula = Matricula(cod_matricula, aluno, modalidade, qtde_aulas)
         arvore_matricula.inserir(cod_matricula, nova_matricula)
-        formato = lambda matri: f"{matri.cod_Matricula},{matri.qtdeAulas},{matri.cod_aluno.codAluno},{matri.cod_modalidade.cod_modalidade}\n"
+        formato = lambda \
+            matri: f"{matri.cod_Matricula},{matri.qtdeAulas},{matri.cod_aluno.codAluno},{matri.cod_modalidade.cod_modalidade}\n"
         arvore_matricula.salvar("Dados/matriculas.txt", formato)
         print("\nMatrícula feita com sucesso!")
     except (ValueError, IndexError):
@@ -478,12 +547,17 @@ def excluir_matricula(arvore_matricula):
             return
 
         arvore_matricula.remover(codigo)
-        formato = lambda m: f"{m.cod_Matricula},{m.qtdeAulas},{m.cod_aluno.codAluno},{m.cod_modalidade.cod_modalidade}\n"
+        formato = lambda \
+            m: f"{m.cod_Matricula},{m.qtdeAulas},{m.cod_aluno.codAluno},{m.cod_modalidade.cod_modalidade}\n"
         arvore_matricula.salvar("Dados/matriculas.txt", formato)
         print("\nMatrícula excluída com sucesso.")
     except ValueError:
         print("\nEntrada inválida. O código deve ser um número.")
 
+def ler_matriculas(arvore_matricula):
+    leitura_exaustiva(arvore_matricula, "Matrículas")
+
+# ------- Menus de Interação -------
 def menu_cadastros(arvores):
     while True:
         print("\n--- SESSÃO DE CADASTROS ---")
@@ -567,42 +641,58 @@ def menu_exclusoes(arvores):
         else:
             print("Opção inválida.")
 
+def menu_listagens(arvores):
+    while True:
+        print("\n--- SESSÃO DE LISTAGENS ---")
+        print("1. Listar Cidades")
+        print("2. Listar Professores")
+        print("3. Listar Alunos")
+        print("4. Listar Modalidades")
+        print("5. Listar Matrículas")
+        print("6. Voltar")
+        opcao = input("Digite sua opção: ")
+        if opcao == '1':
+            ler_cidades(arvores['cidade'])
+        elif opcao == '2':
+            ler_professores(arvores['professor'])
+        elif opcao == '3':
+            ler_alunos(arvores['aluno'])
+        elif opcao == '4':
+            ler_modalidades(arvores['modalidade'])
+        elif opcao == '5':
+            ler_matriculas(arvores['matricula'])
+        elif opcao == '6':
+            break
+        else:
+            print("Opção inválida.")
+
 if __name__ == "__main__":
     os.makedirs("Dados", exist_ok=True)
-
-    arvores = {
-        "cidade": ArvoreBinaria(),
-        "aluno": ArvoreBinaria(),
-        "professor": ArvoreBinaria(),
-        "modalidade": ArvoreBinaria(),
-        "matricula": ArvoreBinaria()
-    }
-
+    arvores = {"cidade": ArvoreBinaria(), "aluno": ArvoreBinaria(), "professor": ArvoreBinaria(), "modalidade": ArvoreBinaria(), "matricula": ArvoreBinaria()}
     carregar_dados("Dados/cidades.txt", arvores['cidade'], construtor_cidade)
     carregar_dados("Dados/professores.txt", arvores['professor'], construtor_professor, arvore_cidade=arvores['cidade'])
     carregar_dados("Dados/alunos.txt", arvores['aluno'], construtor_aluno, arvore_cidade=arvores['cidade'])
-    carregar_dados("Dados/modalidades.txt", arvores['modalidade'], construtor_modalidade,
-                   arvore_professor=arvores['professor'])
-    carregar_dados("Dados/matriculas.txt", arvores['matricula'], construtor_matricula, arvore_aluno=arvores['aluno'],
-                   arvore_modalidade=arvores['modalidade'])
+    carregar_dados("Dados/modalidades.txt", arvores['modalidade'], construtor_modalidade, arvore_professor=arvores['professor'])
+    carregar_dados("Dados/matriculas.txt", arvores['matricula'], construtor_matricula, arvore_aluno=arvores['aluno'], arvore_modalidade=arvores['modalidade'])
 
     while True:
         print("\n---------- MENU PRINCIPAL ----------")
         print("1. Sessão de Cadastros")
         print("2. Sessão de Consultas")
         print("3. Sessão de Exclusões")
+        print("4. Sessão de Listagens")
         print("0. Sair")
-
-        opcao = input("Digite sua opcao: ")
-
+        opcao = input("Digite sua opção: ")
         if opcao == '1':
             menu_cadastros(arvores)
         elif opcao == '2':
             menu_consultas(arvores)
         elif opcao == '3':
             menu_exclusoes(arvores)
+        elif opcao == '4':
+            menu_listagens(arvores)
         elif opcao == '0':
-            print("Encerrando o programa!")
+            print("Encerrando...")
             break
         else:
             print("Opção inválida.")
