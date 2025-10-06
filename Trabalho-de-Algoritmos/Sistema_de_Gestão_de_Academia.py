@@ -451,7 +451,7 @@ class App(ctk.CTk):
         input_frame = ctk.CTkFrame(relatorio)
         input_frame.pack(padx=10, pady=10, fill="x")
 
-        ctk.CTkLabel(input_frame, text="Cód. da Modalidade:").pack(side="left", padx=(10, 5), pady=10)
+        ctk.CTkLabel(input_frame, text="Digite o código da Modalidade/Matrículas:").pack(side="left", padx=(10, 5), pady=10)
         self.relatorio_cod = ctk.CTkEntry(input_frame, width=150)
         self.relatorio_cod.pack(side="left", padx=5, pady=10)
         ctk.CTkButton(input_frame, text="Faturamento por Modalidade", command=self.relatorio_faturamento).pack(
@@ -660,7 +660,6 @@ class App(ctk.CTk):
                 self.consulta_resultado.insert("1.0", str(resultado))
             else:
                 self.consulta_resultado.insert("1.0", "Professor não encontrado com este código.")
-
             self.consulta_resultado.configure(state="disabled")
         except ValueError:
             messagebox.showerror("Erro de Entrada", "O código deve ser um número inteiro.")
