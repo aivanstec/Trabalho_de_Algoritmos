@@ -150,7 +150,7 @@ class ArvoreBinaria:
             arquivo.write(linha)
             self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
-    def remover(self, codigo):
+    def excruir(self, codigo):
         self.raiz = self.excluir_indece(self.raiz, codigo)
 
     def encontrar_indece(self, indece_atual):
