@@ -153,7 +153,7 @@ class ArvoreBinaria:
     def remover(self, codigo):
         self.raiz = self.excluir_indece(self.raiz, codigo)
 
-    def _encontrar_minimo(self, indece_atual):
+    def encontrar_indece(self, indece_atual):
         while indece_atual and indece_atual.esquerda is not None:
             indece_atual = indece_atual.esquerda
         return indece_atual
@@ -170,7 +170,7 @@ class ArvoreBinaria:
                 return indece_atual.direita
             elif indece_atual.direita is None:
                 return indece_atual.esquerda
-            sucessor = self._encontrar_minimo(indece_atual.direita)
+            sucessor = self.encontrar_indece(indece_atual.direita)
             indece_atual.codigo = sucessor.codigo
             indece_atual.dado = sucessor.dado
             indece_atual.direita = self.excluir_indece(indece_atual.direita, sucessor.codigo)
