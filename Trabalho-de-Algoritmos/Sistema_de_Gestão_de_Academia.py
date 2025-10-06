@@ -25,7 +25,7 @@ class Aluno:
     def __str__(self):
         return (f"Código do Aluno: {self.codAluno}"
                 f"\nNome: {self.nome}, Data de Nascimento: {self.data} "
-                f"\nPeso: {self.peso} kg, Altura: {self.altura} "
+                f"\nPeso: {self.peso} kg, Altura: {self.altura} m"
                 f"\nCidade: {self.cidade.descricao} ({self.cidade.estado})")
 
     def calcular_imc(self):
@@ -110,19 +110,19 @@ class ArvoreBinaria:
         if self.raiz is None:
             self.raiz = Indece(codigo, dado_obj)
         else:
-            self._inserir_indece(self.raiz, codigo, dado_obj)
+            self.inserir_indece(self.raiz, codigo, dado_obj)
 
-    def _inserir_indece(self, indece_atual, codigo, dado_obj):
+    def inserir_indece(self, indece_atual, codigo, dado_obj):
         if codigo < indece_atual.codigo:
             if indece_atual.esquerda is None:
                 indece_atual.esquerda = Indece(codigo, dado_obj)
             else:
-                self._inserir_indece(indece_atual.esquerda, codigo, dado_obj)
+                self.inserir_indece(indece_atual.esquerda, codigo, dado_obj)
         elif codigo > indece_atual.codigo:
             if indece_atual.direita is None:
                 indece_atual.direita = Indece(codigo, dado_obj)
             else:
-                self._inserir_indece(indece_atual.direita, codigo, dado_obj)
+                self.inserir_indece(indece_atual.direita, codigo, dado_obj)
 
     def buscar(self, codigo):
         return self.buscar_indece(self.raiz, codigo)
@@ -150,7 +150,7 @@ class ArvoreBinaria:
             arquivo.write(linha)
             self.salvar_arquivo(indece_atual.direita, arquivo, formatador_arquivo)
 
-    def excruir(self, codigo):
+    def excluir(self, codigo):
         self.raiz = self.excluir_indece(self.raiz, codigo)
 
     def encontrar_indece(self, indece_atual):
@@ -187,18 +187,6 @@ class ArvoreBinaria:
             dados.append(indece_atual.dado)
             self.percorrer_raiz(indece_atual.direita, dados)
 
-def leitura_exaustiva(arvore, nome_tabela):
-    print(f"\n--- Leitura Exaustiva de {nome_tabela} ---")
-    todos_os_itens = arvore.percorrer()
-    if not todos_os_itens:
-        print(f"Nenhum registro encontrado em {nome_tabela}.")
-        return
-    for item in todos_os_itens:
-        print(item)
-        print("-" * 20)
-    print(f"Total de {len(todos_os_itens)} registros.")
-
-# ------- Funções de Carregamento -------
 def carregar_dados(arquivo, arvore, construtor_arq, **carregar):
     try:
         with open(arquivo, "r", encoding='utf-8') as f:
@@ -256,7 +244,7 @@ class App(ctk.CTk):
         self.arvores = arvores
 
         self.title("PowerOn")
-        self.geometry("1500x768")
+        self.geometry("800x600")
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
 
@@ -428,11 +416,15 @@ class App(ctk.CTk):
         button_frame = ctk.CTkScrollableFrame(listagens_tab, orientation="horizontal", height=60)
         button_frame.pack(padx=10, pady=10, fill="x")
 
-        ctk.CTkButton(button_frame, text="Listar Cidades", command=self.listar_cidades).pack(side="left", padx=5, pady=5)
+        ctk.CTkButton(button_frame, text="Listar Cidades", command=self.listar_cidades).pack(side="left", padx=5,
+                                                                                             pady=5)
         ctk.CTkButton(button_frame, text="Listar Alunos", command=self.listar_alunos).pack(side="left", padx=5, pady=5)
-        ctk.CTkButton(button_frame, text="Listar Professores", command=self.listar_professores).pack(side="left", padx=5, pady=5)
-        ctk.CTkButton(button_frame, text="Listar Modalidades", command=self.listar_modalidades).pack(side="left", padx=5, pady=5)
-        ctk.CTkButton(button_frame, text="Listar Matrículas", command=self.listar_matriculas).pack(side="left", padx=5, pady=5)
+        ctk.CTkButton(button_frame, text="Listar Professores", command=self.listar_professores).pack(side="left",
+                                                                                                     padx=5, pady=5)
+        ctk.CTkButton(button_frame, text="Listar Modalidades", command=self.listar_modalidades).pack(side="left",
+                                                                                                     padx=5, pady=5)
+        ctk.CTkButton(button_frame, text="Listar Matrículas", command=self.listar_matriculas).pack(side="left", padx=5,
+                                                                                                   pady=5)
 
         self.listagem = ctk.CTkTextbox(listagens_tab, width=760, height=430)
         self.listagem.pack(padx=10, pady=10, fill="both", expand=True)
@@ -469,7 +461,7 @@ class App(ctk.CTk):
         self.relatorio.pack(padx=10, pady=10, fill="both", expand=True)
         self.relatorio.configure(state="disabled")
 
-# ------- Área da Cidade -------
+    # ------- Área da Cidade -------
     def incluir_cidade(self):
         try:
             cod_cidade = int(self.cidade_cod.get())
@@ -523,17 +515,14 @@ class App(ctk.CTk):
                 return
             for aluno in self.arvores['aluno'].percorrer():
                 if aluno.cidade.codCidade == codigo:
-                    messagebox.showerror("Erro de Exclusão",
-                                         f"A cidade não pode ser excluída, pois o aluno '{aluno.nome}' está cadastrado nela.")
+                    messagebox.showerror("Erro de Exclusão",f"A cidade não pode ser excluída, pois o aluno '{aluno.nome}' está cadastrado nela.")
                     return
             for prof in self.arvores['professor'].percorrer():
                 if prof.cidade.codCidade == codigo:
-                    messagebox.showerror("Erro de Exclusão",
-                                         f"A cidade não pode ser excluída, pois o professor '{prof.nome}' está cadastrado nela.")
+                    messagebox.showerror("Erro de Exclusão",f"A cidade não pode ser excluída, pois o professor '{prof.nome}' está cadastrado nela.")
                     return
-            if messagebox.askyesno("Confirmar Exclusão",
-                                   f"Tem certeza que deseja excluir a cidade de código {codigo}?"):
-                self.arvores['cidade'].remover(codigo)
+            if messagebox.askyesno("Confirmar Exclusão",f"Tem certeza que deseja excluir a cidade de código {codigo}?"):
+                self.arvores['cidade'].excluir(codigo)
                 formato = lambda cid: f"{cid.codCidade},{cid.descricao},{cid.estado}\n"
                 self.arvores['cidade'].salvar("Dados/cidades.txt", formato)
                 messagebox.showinfo("Sucesso", "Cidade excluída com sucesso.")
@@ -544,7 +533,7 @@ class App(ctk.CTk):
     def listar_cidades(self):
         self.leitura_exaustiva("cidade", "Cidades")
 
-# ------- Área do Aluno -------
+    # ------- Área do Aluno -------
     def incluir_aluno(self):
         try:
             cod_aluno = int(self.aluno_cod.get())
@@ -611,11 +600,10 @@ class App(ctk.CTk):
                 return
             for matricula in self.arvores['matricula'].percorrer():
                 if matricula.cod_aluno.codAluno == codigo:
-                    messagebox.showerror("Erro de Exclusão",
-                                         f"O aluno não pode ser excluído, pois está na matrícula cód. {matricula.cod_Matricula}.")
+                    messagebox.showerror("Erro de Exclusão",f"O aluno não pode ser excluído, pois está na matrícula cód. {matricula.cod_Matricula}.")
                     return
             if messagebox.askyesno("Confirmar Exclusão", f"Tem certeza que deseja excluir o aluno de código {codigo}?"):
-                self.arvores['aluno'].remover(codigo)
+                self.arvores['aluno'].excluir(codigo)
                 formato = lambda alu: f"{alu.codAluno},{alu.nome},{alu.data},{alu.peso},{alu.altura},{alu.cidade.codCidade}\n"
                 self.arvores['aluno'].salvar("Dados/alunos.txt", formato)
                 messagebox.showinfo("Sucesso", "Aluno excluído com sucesso.")
@@ -626,7 +614,7 @@ class App(ctk.CTk):
     def listar_alunos(self):
         self.leitura_exaustiva("aluno", "Alunos")
 
-# ------- Área do Professor -------
+    # ------- Área do Professor -------
     def incluir_professor(self):
         try:
             cod_professor = int(self.prof_cod.get())
@@ -648,8 +636,7 @@ class App(ctk.CTk):
 
             novo_professor = Professor(cod_professor, nome, endereco, telefone, cidade)
             self.arvores['professor'].inserir(cod_professor, novo_professor)
-            formato = lambda \
-                    prof: f"{prof.codProfessor},{prof.nome},{prof.endereco},{prof.telefone},{prof.cidade.codCidade}\n"
+            formato = lambda prof: f"{prof.codProfessor},{prof.nome},{prof.endereco},{prof.telefone},{prof.cidade.codCidade}\n"
             self.arvores['professor'].salvar("Dados/professores.txt", formato)
             messagebox.showinfo("Sucesso", "Professor incluído com sucesso!")
             for entry in [self.prof_cod, self.prof_nome, self.prof_end, self.prof_tel, self.prof_cidade_cod]:
@@ -691,14 +678,11 @@ class App(ctk.CTk):
                 return
             for mod in self.arvores['modalidade'].percorrer():
                 if mod.cod_professor.codProfessor == codigo:
-                    messagebox.showerror("Erro de Exclusão",
-                                         f"O professor não pode ser excluído, pois leciona a modalidade '{mod.desc_Modalidade}'.")
+                    messagebox.showerror("Erro de Exclusão",f"O professor não pode ser excluído, pois leciona a modalidade '{mod.desc_Modalidade}'.")
                     return
-            if messagebox.askyesno("Confirmar Exclusão",
-                                   f"Tem certeza que deseja excluir o professor de código {codigo}?"):
-                self.arvores['professor'].remover(codigo)
-                formato = lambda \
-                        prof: f"{prof.codProfessor},{prof.nome},{prof.endereco},{prof.telefone},{prof.cidade.codCidade}\n"
+            if messagebox.askyesno("Confirmar Exclusão",f"Tem certeza que deseja excluir o professor de código {codigo}?"):
+                self.arvores['professor'].excluir(codigo)
+                formato = lambda prof: f"{prof.codProfessor},{prof.nome},{prof.endereco},{prof.telefone},{prof.cidade.codCidade}\n"
                 self.arvores['professor'].salvar("Dados/professores.txt", formato)
                 messagebox.showinfo("Sucesso", "Professor excluído com sucesso.")
                 self.exclusao_codigo.delete(0, 'end')
@@ -708,46 +692,36 @@ class App(ctk.CTk):
     def listar_professores(self):
         self.leitura_exaustiva("professor", "Professores")
 
-# ------- Área da Modalidade -------
+    # ------- Área da Modalidade -------
     def incluir_modalidade(self):
         try:
-            cod_matricula = int(self.mat_cod.get())
-            cod_aluno = int(self.mat_aluno_cod.get())
-            cod_modalidade = int(self.mat_mod_cod.get())
-            qtde_aulas = int(self.mat_aulas.get())
+            cod_modalidade = int(self.mod_cod_entry.get())
+            desc = self.mod_desc_entry.get()
+            valor = float(self.mod_valor_entry.get())
+            limite = int(self.mod_limite_entry.get())
+            cod_prof = int(self.mod_prof_cod_entry.get())
 
-            if self.arvores['matricula'].buscar(cod_matricula):
-                messagebox.showerror("Erro", "Já existe uma matrícula com este código.")
+            if not desc:
+                messagebox.showerror("Erro", "A descrição não pode estar vazia.")
                 return
-            aluno = self.arvores['aluno'].buscar(cod_aluno)
-            if not aluno:
-                messagebox.showerror("Erro", "Aluno não encontrado.")
+            if self.arvores['modalidade'].buscar(cod_modalidade):
+                messagebox.showerror("Erro", "Já existe uma modalidade com este código.")
                 return
-            modalidade = self.arvores['modalidade'].buscar(cod_modalidade)
-            if not modalidade:
-                messagebox.showerror("Erro", "Modalidade não encontrada.")
+            professor = self.arvores['professor'].buscar(cod_prof)
+            if not professor:
+                messagebox.showerror("Erro", "Professor não encontrado.")
                 return
-            if modalidade.totaAlunos >= modalidade.limiteAlunos:
-                messagebox.showerror("Vagas Esgotadas",
-                                     f"Não há mais vagas para a modalidade '{modalidade.desc_Modalidade}'.")
-                return
-            nova_matricula = Matricula(cod_matricula, aluno, modalidade, qtde_aulas)
-            self.arvores['matricula'].inserir(cod_matricula, nova_matricula)
 
-            modalidade.totaAlunos += 1
-            formato_mod = lambda mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
-            self.arvores['modalidade'].salvar("Dados/modalidades.txt", formato_mod)
-
-            formato_mat = lambda matri: f"{matri.cod_Matricula},{matri.qtdeAulas},{matri.cod_aluno.codAluno},{matri.cod_modalidade.cod_modalidade}\n"
-            self.arvores['matricula'].salvar("Dados/matriculas.txt", formato_mat)
-
-            valor_pago = nova_matricula.calcular_valor()
-            messagebox.showinfo("Sucesso", f"Matrícula realizada com sucesso!\nValor a pagar: R${valor_pago:.2f}")
-
-            for entry in [self.mat_cod, self.mat_aluno_cod, self.mat_mod_cod, self.mat_aulas]:
+            nova_modalidade = Modalidade(cod_modalidade, desc, professor, valor, limite, 0)
+            self.arvores['modalidade'].inserir(cod_modalidade, nova_modalidade)
+            formato = lambda mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
+            self.arvores['modalidade'].salvar("Dados/modalidades.txt", formato)
+            messagebox.showinfo("Sucesso", "Modalidade incluída com sucesso!")
+            for entry in [self.mod_cod_entry, self.mod_desc_entry, self.mod_valor_entry, self.mod_limite_entry,
+                          self.mod_prof_cod_entry]:
                 entry.delete(0, 'end')
         except ValueError:
-            messagebox.showerror("Erro de Entrada. Todos os códigos e a quantidade de aulas devem ser números inteiros.")
+            messagebox.showerror("Erro de Entrada", "Verifique os tipos de dados inseridos (códigos, valor, limite).")
 
     def consultar_modalidade(self):
         try:
@@ -785,9 +759,8 @@ class App(ctk.CTk):
                                          f"A modalidade não pode ser excluída, pois está na matrícula cód. {matricula.cod_Matricula}.")
                     return
             if messagebox.askyesno("Confirmar Exclusão",f"Tem certeza que deseja excluir a modalidade de código {codigo}?"):
-                self.arvores['modalidade'].remover(codigo)
-                formato = lambda \
-                    mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
+                self.arvores['modalidade'].excluir(codigo)
+                formato = lambda mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
                 self.arvores['modalidade'].salvar("Dados/modalidades.txt", formato)
                 messagebox.showinfo("Sucesso", "Modalidade excluída com sucesso.")
                 self.exclusao_codigo.delete(0, 'end')
@@ -797,7 +770,7 @@ class App(ctk.CTk):
     def listar_modalidades(self):
         self.leitura_exaustiva("modalidade", "Modalidades")
 
-# ------- Área da Matrícula -------
+    # ------- Área da Matrícula -------
     def incluir_matricula(self):
         try:
             cod_matricula = int(self.mat_cod.get())
@@ -816,9 +789,9 @@ class App(ctk.CTk):
             if not modalidade:
                 messagebox.showerror("Erro", "Modalidade não encontrada.")
                 return
-
             if modalidade.totaAlunos >= modalidade.limiteAlunos:
-                messagebox.showerror("Vagas Esgotadas",f"Não há mais vagas para a modalidade '{modalidade.desc_Modalidade}'.")
+                messagebox.showerror("Vagas Esgotadas",
+                                     f"Não há mais vagas para a modalidade '{modalidade.desc_Modalidade}'.")
                 return
 
             nova_matricula = Matricula(cod_matricula, aluno, modalidade, qtde_aulas)
@@ -828,7 +801,6 @@ class App(ctk.CTk):
             formato_mod = lambda mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
             self.arvores['modalidade'].salvar("Dados/modalidades.txt", formato_mod)
 
-            # Salva a nova matrícula
             formato_mat = lambda matri: f"{matri.cod_Matricula},{matri.qtdeAulas},{matri.cod_aluno.codAluno},{matri.cod_modalidade.cod_modalidade}\n"
             self.arvores['matricula'].salvar("Dados/matriculas.txt", formato_mat)
             valor_pago = nova_matricula.calcular_valor()
@@ -837,7 +809,8 @@ class App(ctk.CTk):
             for entry in [self.mat_cod, self.mat_aluno_cod, self.mat_mod_cod, self.mat_aulas]:
                 entry.delete(0, 'end')
         except ValueError:
-            messagebox.showerror("Erro de Entrada. Todos os códigos e a quantidade de aulas devem ser números inteiros.")
+            messagebox.showerror("Erro de Entrada",
+                                 "Todos os códigos e a quantidade de aulas devem ser números inteiros.")
 
     def consultar_matricula(self):
         try:
@@ -880,8 +853,7 @@ class App(ctk.CTk):
                     modalidade.totaAlunos -= 1
                     formato_mod = lambda mod: f"{mod.cod_modalidade},{mod.desc_Modalidade},{mod.valorAula},{mod.limiteAlunos},{mod.totaAlunos},{mod.cod_professor.codProfessor}\n"
                     self.arvores['modalidade'].salvar("Dados/modalidades.txt", formato_mod)
-
-                self.arvores['matricula'].remover(codigo)
+                self.arvores['matricula'].excluir(codigo)
                 formato_matri = lambda matri: f"{matri.cod_Matricula},{matri.qtdeAulas},{matri.cod_aluno.codAluno},{matri.cod_modalidade.cod_modalidade}\n"
                 self.arvores['matricula'].salvar("Dados/matriculas.txt", formato_matri)
 
@@ -893,7 +865,7 @@ class App(ctk.CTk):
     def listar_matriculas(self):
         self.leitura_exaustiva("matricula", "Matrículas")
 
-# ------- Área de Relatorios -------
+    # ------- Área de Relatorios -------
     def relatorio_faturamento(self):
         try:
             cod_rel = self.relatorio_cod.get()
@@ -920,22 +892,20 @@ class App(ctk.CTk):
                     alunos_na_modalidade += 1
                     alunos_nomes.append(f"- {matricula.cod_aluno.nome}")
 
-            texto_relatorio = (
+            relatorio = (
                 f"--- Relatório de Faturamento por Modalidade ---\n\n"
                 f"Descrição da Modalidade: {modalidade.desc_Modalidade}\n"
                 f"Nome do Professor: {modalidade.cod_professor.nome}\n"
                 f"Cidade do Professor: {modalidade.cod_professor.cidade.descricao} ({modalidade.cod_professor.cidade.estado})\n"
-                f"---------------------------------------------\n"
                 f"Total de Alunos Matriculados: {alunos_na_modalidade}\n"
                 f"Valor Total Faturado: R${faturamento_total:.2f}\n"
-                f"---------------------------------------------\n"
                 f"Alunos na Modalidade:\n"
                 f"{'\n'.join(alunos_nomes) if alunos_nomes else 'Nenhum aluno matriculado.'}"
             )
 
             self.relatorio.configure(state="normal")
             self.relatorio.delete("1.0", "end")
-            self.relatorio.insert("1.0", texto_relatorio)
+            self.relatorio.insert("1.0", relatorio)
             self.relatorio.configure(state="disabled")
 
         except ValueError:
@@ -954,7 +924,9 @@ class App(ctk.CTk):
         texto = "--- Relatório Geral de Matrículas ---\n\n"
         valor_total_geral = 0.0
 
-        for m in matriculas:
+        matriculas_ordenadas = sorted(matriculas, key=lambda m: m.cod_Matricula)
+
+        for m in matriculas_ordenadas:
             valor_aluno = m.calcular_valor()
             valor_total_geral += valor_aluno
 
@@ -971,6 +943,7 @@ class App(ctk.CTk):
 
         self.relatorio.insert("1.0", texto)
         self.relatorio.configure(state="disabled")
+
 
 if __name__ == "__main__":
     os.makedirs("Dados", exist_ok=True)
